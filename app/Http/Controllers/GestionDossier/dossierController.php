@@ -9,6 +9,7 @@ use App\Models\Etape;
 use App\Models\Etape_dossier;
 use App\Models\Etat_sorti;
 use App\Models\Observation;
+use App\Models\Personne_morale;
 use App\Models\Personne_physique;
 use App\Models\Personnel;
 use App\Models\Sortie;
@@ -153,7 +154,7 @@ class dossierController extends Controller
                     ->get()
                     ; */
 
-        $personnes= DB::table('personne_physiques')->get();
+       // $personnes= DB::table('personne_physiques')->get();
         //$etapes  = DB::table('etapes')->get();
         //$etat_sorties  = DB::table('etat_sortis')->get();
 
@@ -162,6 +163,7 @@ class dossierController extends Controller
         //$etape_dossiers = Etape_dossier::all();
         $sorties = Sortie::all();
         $personne_physiques = Personne_physique::all();
+        $personne_morales = Personne_morale::all();
         $utilisateurs = Utilisateur::all();
         $etapeDossiers= DB::table('etapes')->join('etape_dossiers', 'etapes.id','=','etape_dossiers.etapes_id')->select('etapes.*','etape_dossiers.*');
         //$etapeDossiers=Etape::all()->join('Etape_dossier', 'Etape.id','=','Etape_dossier.etapes_id');
@@ -169,7 +171,7 @@ class dossierController extends Controller
         $niveau = 1;
         $etape_dossiers = Etape_dossier::all()->last()->get();
         $etat_sorties=Etat_sorti::all();
-        return view('gestionDeDossier.dossier.index',['niveau'=>$niveau, 'dossiers'=>$dossiers ,'personnes'=>$personnes, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties ]);
+        return view('gestionDeDossier.dossier.index',['niveau'=>$niveau, 'dossiers'=>$dossiers ,/* 'personnes'=>$personnes, */'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'personne_morales'=>$personne_morales, /* 'etat_sorties'=>$etat_sorties */ ]);
 
     }
 
@@ -181,7 +183,7 @@ class dossierController extends Controller
     public function create()
     {
         //
-        
+
         return view('gestionDeDossier.dossier.create');
     }
 

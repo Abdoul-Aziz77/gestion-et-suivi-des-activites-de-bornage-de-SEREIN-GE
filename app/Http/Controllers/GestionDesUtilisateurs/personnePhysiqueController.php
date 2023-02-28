@@ -85,8 +85,8 @@ class personnePhysiqueController extends Controller
         ]);
 
         $personne_physiques->save();
-        $retour = url()->previous();
-        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
+        //$retour = url()->previous();
+        return redirect('/')->with('success', "l'etape est enregistrer avec succès");
 
     }
 

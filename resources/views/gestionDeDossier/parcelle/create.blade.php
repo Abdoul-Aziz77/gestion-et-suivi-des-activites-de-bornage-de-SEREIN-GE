@@ -2,7 +2,7 @@
 @section('contenu')
 
 <br><br>
-    <form method="Post", action="{{route('parcelle.store')}}">
+    <form method="Post", action="{{route('parcelle.index')}}">
         @csrf
         <fieldset><legend> Ajout d'un nouveau parcelle  </legend>
 
@@ -26,20 +26,13 @@
                         @foreach ($personne_physiques as $personne_physique)
                         <option value="{{$personne_physique->id}}">{{$personne_physique->nom }} {{$personne_physique->prenom}}</option>
                         @endforeach
-                      </select>
-            </div>
-
-            <div class="row mb-3">
-                <label for="nom" class="col-sm-2 col-form-label">Personne morale</label>
-
-                    <select class="form-select" name="dossier_id" aria-label="Default select example">
-                        <option selected>choisissez la personne morale correspondant</option>
-
                         @foreach ($personne_morales as $personne_morale)
                         <option value="{{$personne_morale->id}}">{{$personne_morale->numero_recipicer}}: {{$personne_morale->email}}</option>
                         @endforeach
                       </select>
             </div>
+
+
             <div class="row mb-3">
                 <label for="lot" class="col-sm-2 col-form-label"  >lot</label>
                 <div class="col-sm-10">

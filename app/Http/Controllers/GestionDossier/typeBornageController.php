@@ -52,8 +52,8 @@ class typeBornageController extends Controller
         ]);
 
         $typebornages->save();
-        $retour = url()->previous();
-        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
+        //$retour = url()->previous();
+        return redirect('/')->with('success', "l'etape est enregistrer avec succès");
     }
 
     /**

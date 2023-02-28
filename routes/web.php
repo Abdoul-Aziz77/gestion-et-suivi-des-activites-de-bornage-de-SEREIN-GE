@@ -75,6 +75,8 @@ Route::resource('etat de sorti', etatSortieController::class);
 
 Route::resource('etape', etapeController::class);
 
+Route::resource('parcelle', parcelleController::class);
+
 Route::resource('poste', posteController::class);
 
 Route::resource('adresse', adresseController::class);
@@ -100,7 +102,6 @@ Route::get('/dossierAnnuler', [dossierController::class, 'dossierAnnuler'])->nam
 
 Route::resource('etape dossier', etapeDossierController::class);
 
-Route::resource('parcelle', parcelleController::class);
 
 Route::resource('profil', profilController::class);
 

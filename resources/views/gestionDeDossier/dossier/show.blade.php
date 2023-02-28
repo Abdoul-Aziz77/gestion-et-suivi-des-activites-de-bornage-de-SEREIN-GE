@@ -75,7 +75,7 @@
 
             </div>
 
-            
+
             <div class="tab-content clearfix ui-tabs-panel ui-corner-bottom ui-widget-content" id="tab-posts"
                 aria-labelledby="ui-id-2" role="tabpanel" aria-hidden="true" style="display: none;">
 
@@ -169,7 +169,7 @@
 
                                     <div class="comment-content clearfix">
                                         <div class="comment-author"><a href="#" rel="external nofollow"
-                                                class="url">MONE : {{ $commentaire->utilisateur_id }} </a><span><a
+                                                class="#{{-- url --}}">MONE : {{ $commentaire->utilisateur_id }} </a><span><a
                                                     href="#" title="Permalink to this comment">
                                                     {{ $commentaire->date_enregistrement }} </a></span></div>
 

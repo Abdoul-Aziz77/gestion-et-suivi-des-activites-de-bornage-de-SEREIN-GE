@@ -57,8 +57,8 @@ class etapeController extends Controller
         ]);
 
         $etapes->save();
-        $retour = url()->previous();
-        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
+       // $retour = url()->previous();
+        return redirect('/')->with('success', "l'etape est enregistrer avec succès");
     }
 
     /**
