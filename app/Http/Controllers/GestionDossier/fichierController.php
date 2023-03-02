@@ -42,6 +42,18 @@ class fichierController extends Controller
     public function store(Request $request)
     {
         //
+
+        $fichiers = new fichier([
+           
+            'parcelle_id'=> $request->get('parcelle_id'),
+            'dossier_id' =>$request->get('dossier_id'),
+            'nom' => $request->get('nom'),
+            'fichier' => $request->get('fichier'),
+        ]);
+
+        $fichiers->save();
+
+        return redirect('/');
     }
 
     /**

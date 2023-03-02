@@ -8,11 +8,14 @@ use App\Models\Dossier;
 use App\Models\Etape;
 use App\Models\Etape_dossier;
 use App\Models\Etat_sorti;
+use App\Models\fichier;
 use App\Models\Observation;
+use App\Models\Parcelle;
 use App\Models\Personne_morale;
 use App\Models\Personne_physique;
 use App\Models\Personnel;
 use App\Models\Sortie;
+use App\Models\typebornage;
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,43 +34,67 @@ class dossierController extends Controller
      public function store(Request $request)
     {
 
-        $request->validate([
+        /* $request->validate([
 
             'situation'=>'required',
             'type_bornage'=>'required',
             'personne_physique_id'=>'required'
         ]);
-        /* //
+        /* // */
         //
 
 
         // la request
-        $Dossier = new Dossier([
 
+            $dossierid = DB::table('dossiers')->insertGetId([
             'situation'=>$request->get('situation'),
             'personne_physique_id'=>$request->get('personne_physique_id'),
-            'type_bornage' => $request->get('type_bornage'),
+            'typebornages_id' =>$request->get('typebornages_id'),
         ]);
 
-        $Dossier->save();
+
+
+        $parcelles = new Parcelle([
+
+            'personne_moral_id'=> 1,
+            'personne_physique_id' => $request->get('personne_physique_id'),
+            'dossier_id' => $dossierid,
+            'lot' => $request->get('lot'),
+            'section' => $request->get('section'),
+            'superficie' => $request->get('superficie'),
+
+        ]);
+
+        $parcelles->save();
+
+        $fichiers = new fichier([
+
+            'parcelle_id'=> $request->get('parcelle_id'),
+            'dossier_id' => $dossierid,
+            'nom' => $request->get('nom'),
+            'fichier' => $request->get('fichier'),
+        ]);
+
+        $fichiers->save();
+
         $retour = url()->previous();
 
-        return view('home')->with('success', "l'etape est enregistrer avec succès"); */
-        return view('home');
+        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
+        //return view('home');
          }
 
         public function dossierAcceuil(Request $request)
         {
             //
-            /*$dossiers = DB::table('dossier')
-                        ->join('personne_dossier', 'dossier.id','=','personne_dossier.dossier_id')
-                        ->join('etape_dossier', 'dossier.id','=','etape_dossier.dossier_id')
-                        ->join('sorties','dossier.id','=','sorties.dossier_id')
-                        ->select('dossier.*','etape_dossier.*','sorties.*')
+            /* $dossiers = DB::table('dossiers')
+                        ->join('personne_dossiers', 'dossiers.id','=','personne_dossiers.dossier_id')
+                        ->join('etape_dossiers', 'dossier.id','=','etape_dossiers.dossier_id')
+                        ->join('sorties','dossiers.id','=','sorties.dossier_id')
+                        ->select('dossiers.*','etape_dossiers.*','sorties.*')
                         ->get()
-                        ;
+                        ; */
 
-            $personnes= DB::table('personne_physique')->select('personne_personne.*')->get();*/
+            //$personnes= DB::table('personne_physique')->select('personne_personne.*')->get();
 
             $personnels = Personnel::all();
             $dossiers = Dossier::all();
@@ -82,8 +109,7 @@ class dossierController extends Controller
             return view('acceuil.dossier',['hniveau'=>$hniveau, 'dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
 
         }
-
-  /*       public function dossierEncours(Request $request)
+        public function dossierEncours(Request $request)
         {
 
             $personnels = Personnel::all();
@@ -142,7 +168,7 @@ class dossierController extends Controller
             return view('acceuil.dossierEnCours',['dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
 
         }
- */
+
     public function index(Request $request)
     {
         //
@@ -168,10 +194,10 @@ class dossierController extends Controller
         $etapeDossiers= DB::table('etapes')->join('etape_dossiers', 'etapes.id','=','etape_dossiers.etapes_id')->select('etapes.*','etape_dossiers.*');
         //$etapeDossiers=Etape::all()->join('Etape_dossier', 'Etape.id','=','Etape_dossier.etapes_id');
         $etapes=Etape::all();
-        $niveau = 1;
-        $etape_dossiers = Etape_dossier::all()->last()->get();
+        $type_bornages = typebornage::all();
+        $etape_dossiers = Etape_dossier::all() /* Etape_dossier::all()->last()->get() */;
         $etat_sorties=Etat_sorti::all();
-        return view('gestionDeDossier.dossier.index',['niveau'=>$niveau, 'dossiers'=>$dossiers ,/* 'personnes'=>$personnes, */'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'personne_morales'=>$personne_morales, /* 'etat_sorties'=>$etat_sorties */ ]);
+        return view('gestionDeDossier.dossier.index',['type_bornages'=>$type_bornages, 'dossiers'=>$dossiers ,/* 'personnes'=>$personnes, */'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'personne_morales'=>$personne_morales, /* 'etat_sorties'=>$etat_sorties */ ]);
 
     }
 
@@ -247,5 +273,11 @@ class dossierController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function annuker($id)
+    {
+        //
+
     }
 }

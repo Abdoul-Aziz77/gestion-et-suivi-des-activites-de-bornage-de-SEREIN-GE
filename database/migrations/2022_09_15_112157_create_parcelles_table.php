@@ -15,16 +15,16 @@ return new class extends Migration
     {
         Schema::create('parcelles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("personne_morale_id")
+            $table->foreignId("personne_morale_id")->nullable()
             /* ->constrained()
             ->onUpdate('restrict')
             ->onDelete('restrict') */;
-            $table->foreignId("personne_physique_id")
+            $table->foreignId("personne_physique_id")->nullable()
             /* ->constrained()
             ->onUpdate('restrict')
             ->onDelete('restrict') */;
-            $table->integer("dossier_id");
-            $table->integer("nparcelle")->nullable();
+            $table->integer("dossier_id")->nullable();
+            $table->integer("numparcelle")->nullable();
             $table->integer("lot")->nullable();
             $table->char("section")->nullable();
             $table->float("superficie")->nullable();

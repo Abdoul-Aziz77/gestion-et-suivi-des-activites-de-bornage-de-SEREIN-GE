@@ -27,7 +27,7 @@
                             @foreach ($fichiers as $fichier)
                                 <tr>
                                     <td>{{ $fichier->id }}</td>
-                                    <td>{{ $fichier->nom }}</td>
+                                    <td><a href="{{ $fichier->fichier }}{{ $fichier->nom }}">{{ $fichier->nom }}</a></td>
                                     <td>{{ $fichier->fichier }}</td>
                                     <td> {{ $fichier->date_enregistrement }} </td>
                                     <td>

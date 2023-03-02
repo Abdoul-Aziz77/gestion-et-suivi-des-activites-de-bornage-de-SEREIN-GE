@@ -121,4 +121,7 @@ class etapeController extends Controller
         $etapes->delete();
         return redirect('/')->with('success', "l'etape est supprimer avec succès");
     }
+
+    
+
 }

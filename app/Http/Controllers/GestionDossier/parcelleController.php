@@ -49,7 +49,7 @@ class parcelleController extends Controller
     public function store(Request $request)
     {
         //
-        $request->validate([
+        /* $request->validate([
             'personne_moral_id'=>'required',
             'personne_physique_id'=>'required',
             'dossier_id'=>'required',
@@ -57,11 +57,12 @@ class parcelleController extends Controller
             'section'=>'required',
             'superficie'=>'required',
 
-        ]);
+        ]); */
 
         // la request
         $parcelles = new Parcelle([
-            'personne_moral_id'=> $request-> get('personne_moral_id'),
+
+            'personne_moral_id'=> 1,
             'personne_physique_id' => $request->get('personne_physique_id'),
             'dossier_id' => $request->get('dossier_id'),
             'lot' => $request->get('lot'),
@@ -147,4 +148,6 @@ class parcelleController extends Controller
         $parcelles->delete();
         return redirect('/')->with('success', "l'parcelle est supprimer avec succès");
     }
+
+
 }

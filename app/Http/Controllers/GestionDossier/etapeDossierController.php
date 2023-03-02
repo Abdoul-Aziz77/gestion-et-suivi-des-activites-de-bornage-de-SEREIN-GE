@@ -7,6 +7,7 @@ use App\Models\Dossier;
 use App\Models\Etape;
 use App\Models\Etape_dossier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class etapeDossierController extends Controller
 {
@@ -126,5 +127,43 @@ class etapeDossierController extends Controller
         $etape_dossiers=Etape_dossier::findOrFail($id);
         $etape_dossiers->delete();
         return redirect('/')->with('success', "l'etape de dossier est supprimer avec succès");
+    }
+
+    public function annuler($id)
+    {
+        //
+$etap_id = DB::table('etapes')->where('niveau','=',0)->value('id');
+$dat = date("y/m/d H:i:s");
+        $etape_dossiers = new Etape_dossier([
+            'etapes_id'=>$etap_id,
+            'dossier_id'=>$id,
+            'statut' => 1,
+            'date_realisation'=>$dat,
+        ]);
+        $etape_dossiers->save();
+
+        return redirect('/')->with('success', "l'etape est supprimer avec succès");
+    }
+
+    public function suspendre($id)
+    {
+        //
+
+        $etape_dossiers=DB::table('etape_dossiers')->latest()
+        ->where('dossier_id','=',$id)->value('id')
+        ;
+
+        $affected = DB::table('etape_dossiers')
+              ->where('id', '=',$etape_dossiers)
+              ->update([
+                'statut' => 0
+            ]);
+
+      /*  // $etape_dossiers->etapes_id = $request->get('etapes_id');
+        //$etape_dossiers->dossier_id=$request->get('dossier_id');
+        $etape_dossiers->statut = 0;
+       // $etape_dossiers->date_realisation =$request->get('date_realisation');
+        $etape_dossiers->update(); */
+        return redirect('/')->with('success', "l'etape de dossier est modifier avec succès");
     }
 }

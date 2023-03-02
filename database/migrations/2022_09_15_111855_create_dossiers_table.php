@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('dossiers', function (Blueprint $table) {
             $table->id();
             $table->string("situation")->nullable();
-            $table->foreignId("typebornages_id")
+            $table->foreignId("typebornages_id")->nullable()
             /* ->constrained()
             ->onUpdate('restrict')
             ->onDelete('restrict') */;
-            $table->foreignId("personne_physique_id");
-            $table->foreignId("personne_morale_id");
-            $table->date("date_enregistrement");
+            $table->foreignId("personne_physique_id")->nullable();
+            $table->foreignId("personne_morale_id")->nullable();
+            $table->date("date_enregistrement")->nullable();
             $table->timestamps();
         });
     }

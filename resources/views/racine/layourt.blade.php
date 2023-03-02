@@ -14,12 +14,18 @@
     <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('template1111/css/style.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/calendar.css') }}" type="text/css" />
+    <link rel="stylesheet"
+        href="{{ asset('template11/fonts/themify-icons/themify-icons.css') }}"
+        type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/components/bs-datatable.css') }}" type="text/css" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <style>
-        .chart-samples ul { list-style: none; }
+        .chart-samples ul {
+            list-style: none;
+        }
 
         .chart-samples h4 {
             text-transform: uppercase;
@@ -33,8 +39,10 @@
             font-weight: 600;
         }
 
-        .chart-samples li a:not(:hover) { color: #AAA; }
-        </style>
+        .chart-samples li a:not(:hover) {
+            color: #AAA;
+        }
+    </style>
 </head>
 
 <body class="stretched">
@@ -89,7 +97,7 @@
 
                         <!-- Primary Navigation
       ============================================= Menu -->
- {{--      <nav class="primary-menu style-3 menu-spacing-margin">
+                        {{--      <nav class="primary-menu style-3 menu-spacing-margin">
 
         <ul class="menu-container">
             <li class="menu-item"><a class="menu-link" href="{{ route('home') }}" style="margin-top: 28px; margin-bottom: 28px;"><div>accueil</div></a></li>
@@ -141,7 +149,7 @@
         </nav>
         <main class="container">
 
-                @yield('contenu')
+            @yield('contenu')
 
         </main>
         <footer id="footer" class="dark">
@@ -209,6 +217,13 @@
         </footer>
     </div>
     <div id="gotoTop" class="icon-angle-up" style="display: block;"></div>
+    {{-- <script src="{{ asset('js/js_templ/jquery-3.3.1.min.js') }}"></script>
+
+
+    <!-- JQUERY STEP -->
+    <script src="{{ asset('js/js_templ/jquery.steps.js') }}"></script> --}}
+
+    <script src="{{ asset('js/js_templ/main.js') }}"></script>
     <script src="{{ asset('js/jquery.js') }}"></script>
     <script src="{{ asset('js/plugins.min.js') }}"></script>
     <script src="{{ asset('js/components/bs-datatable.js') }}"></script>
@@ -225,102 +240,116 @@
     <script src="{{ asset('js/events-data.js') }}"></script>
     <script src="{{ asset('js/components/bs-select.js') }}"></script>
     <script src="{{ asset('js/components/selectsplitter.js') }}"></script>
-    <script src="{{ asset('js/functions.js') }}"></script>
-
     <script>
 
 		$('.selectsplitter').selectsplitter();
 
 	</script>
+    <script src="{{ asset('js/functions.js') }}"></script>
+
+
+{{-- create dossier --}}
+
+ {{-- <!-- JS -->
+ <script src="{{ asset('template11/vendor/jquery/jquery.min.js') }}"></script>
+
+ <script src="{{ asset('template11/vendor/jquery-validation/dist/jquery.validate.min.js') }}"></script>
+
+ <script src="{{ asset('template11/vendor/jquery-validation/dist/additional-methods.min.js') }}"></script>
+
+ <script src="{{ asset('template11/vendor/jquery-steps/jquery.steps.min.js') }}"></script>
+
+ <script src="{{ asset('template11/vendor/minimalist-picker/dobpicker.js') }}"></script>
+
+ <script src="{{ asset('template11/js/main.js') }}"></script> --}}
 
     <!-- Charts JS
-	============================================= -->
+ ============================================= -->
 
 
-	<script>
-		var config = {
-			type: 'pie',
-			data: {
-				datasets: [{
-					data: [
-						/* randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(), */
+    <script>
+        var config = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: [
+                        /* randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(),
+                        randomScalingFactor(), */
                         10,
                         15,
                         50,
                         600,
                         200,
-					],
-					backgroundColor: [
-						window.chartColors.red,
-						window.chartColors.orange,
-						window.chartColors.leaf,
-						window.chartColors.green,
-						window.chartColors.blue,
-					],
-					label: 'Dataset 1'
-				}],
-				labels: [
-					"Dossier annuler",
-					"Dossier suspendu",
-					"nouveau dossier",
-					"Dossier finnaliser",
-					"Dossier en cours"
-				]
-			},
-			options: {
-				responsive: true
-			}
-		};
-
-		window.onload = function() {
-			var ctx = document.getElementById("chart-0").getContext("2d");
-			window.myPie = new Chart(ctx, config);
-		};
-		//var colorNames = Object.keys(window.chartColors);
-	</script>
-
-<script>
-// calendrier
-    var cal = $( '#calendar' ).calendario( {
-            onDayClick : function( $el, $contentEl, dateProperties ) {
-
-                for( var key in dateProperties ) {
-                    console.log( key + ' = ' + dateProperties[ key ] );
-                }
-
-                $('#clicked-month').html( dateProperties[ 'month' ] );
-                $('#clicked-day').html( dateProperties[ 'day' ] );
-
+                    ],
+                    backgroundColor: [
+                        window.chartColors.red,
+                        window.chartColors.orange,
+                        window.chartColors.leaf,
+                        window.chartColors.green,
+                        window.chartColors.blue,
+                    ],
+                    label: 'Dataset 1'
+                }],
+                labels: [
+                    "Dossier annuler",
+                    "Dossier suspendu",
+                    "nouveau dossier",
+                    "Dossier finnaliser",
+                    "Dossier en cours"
+                ]
             },
-            caldata : canvasEvents
-        } ),
-        $month = $( '#calendar-month' ).html( cal.getMonthName() ),
-        $year = $( '#calendar-year' ).html( cal.getYear() );
+            options: {
+                responsive: true
+            }
+        };
 
-    $( '#calendar-next' ).on( 'click', function() {
-        cal.gotoNextMonth( updateMonthYear );
-    } );
-    $( '#calendar-prev' ).on( 'click', function() {
-        cal.gotoPreviousMonth( updateMonthYear );
-    } );
-    $( '#calendar-current' ).on( 'click', function() {
-        cal.gotoNow( updateMonthYear );
-    } );
+        window.onload = function() {
+            var ctx = document.getElementById("chart-0").getContext("2d");
+            window.myPie = new Chart(ctx, config);
+        };
+        //var colorNames = Object.keys(window.chartColors);
+    </script>
 
-    function updateMonthYear() {
-        $month.html( cal.getMonthName() );
-        $year.html( cal.getYear() );
-    }
+    <script>
+        // calendrier
+        var cal = $('#calendar').calendario({
+                onDayClick: function($el, $contentEl, dateProperties) {
 
-    skrollr.init({
-        forceHeight: false
-    });
+                    for (var key in dateProperties) {
+                        console.log(key + ' = ' + dateProperties[key]);
+                    }
 
-</script>
+                    $('#clicked-month').html(dateProperties['month']);
+                    $('#clicked-day').html(dateProperties['day']);
+
+                },
+                caldata: canvasEvents
+            }),
+            $month = $('#calendar-month').html(cal.getMonthName()),
+            $year = $('#calendar-year').html(cal.getYear());
+
+        $('#calendar-next').on('click', function() {
+            cal.gotoNextMonth(updateMonthYear);
+        });
+        $('#calendar-prev').on('click', function() {
+            cal.gotoPreviousMonth(updateMonthYear);
+        });
+        $('#calendar-current').on('click', function() {
+            cal.gotoNow(updateMonthYear);
+        });
+
+        function updateMonthYear() {
+            $month.html(cal.getMonthName());
+            $year.html(cal.getYear());
+        }
+
+        skrollr.init({
+            forceHeight: false
+        });
+    </script>
 
 </body>
 

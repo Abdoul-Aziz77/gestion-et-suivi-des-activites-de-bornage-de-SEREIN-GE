@@ -19,6 +19,7 @@ use App\Http\Controllers\GestionDossier\dossiersController;
 use App\Http\Controllers\GestionDossier\etapeController;
 use App\Http\Controllers\GestionDossier\etapeDossierController;
 use App\Http\Controllers\GestionDossier\fichierController;
+use App\Http\Controllers\GestionDossier\incompatible;
 use App\Http\Controllers\GestionDossier\observationController;
 use App\Http\Controllers\GestionDossier\parcelleController;
 use App\Http\Controllers\GestionDossier\personneDossierController;
@@ -59,15 +60,22 @@ Route::get('/acceuil/client', function () {
 Route::get('/parametrage', function () {
     return view('parametre');
 })->name('parametre');
+
+
 /*
 |**************************************** routes resources*********************************************|
   |--->> cette parti comporte les differents routes resource <<---|
 |*********************************************************************************************|
 */
 
+//Route::post('/ajoutParcelle', [incompatible::class, 'ajoutParcelle'])->name('Ajoutparcelle');
+
+Route::any('/bornage-anuller/{id}', [etapeDossierController::class, 'annuler'])->name('Annuler');
+
 Route::resource('type de bornage', typeBornageController::class);
 
 Route::resource('but', butController::class);
+Route::get('/bornage-suspendu/{id}', [etapeDossierController::class, 'suspendre'])->name('Suspendu');
 
 Route::resource('habilitation', habilitationController::class);
 
@@ -89,12 +97,12 @@ Route::resource('personnel', personnelController::class);
 
 Route::resource('dossier', dossierController::class);
 
-Route::resource('dossiers', dossiersController::class);
+//Route::resource('dossiers', dossiersController::class);
 
 Route::get('/dossiers', [dossierController::class, 'dossierAcceuil'])->name('dossier');
 
 
-Route::post('/nouveau/dossier', [dossierController::class, 'store'])->name('nouveau');
+ Route::post('/nouveau/dossier', [dossierController::class, 'store'])->name('nouveau');
 Route::get('/dossierFinaliser', [dossierController::class, 'dossierFinaliser'])->name('dossierFinaliser');
 Route::get('/dossierEnCours', [dossierController::class, 'dossierEnCours'])->name('dossierEnCours');
 Route::get('/dossierSuspendu', [dossierController::class, 'dossierSuspendu'])->name('dossierSuspendu');
@@ -109,6 +117,7 @@ Route::resource('fichier', fichierController::class);
 
 Route::get('/sorties', [sortieController::class, 'sorties'])->name('sortie');
 Route::resource('sortie', sortieController::class);
+
 
 Route::resource('but de sortie', butSortiController::class);
 

@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('fichiers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("dossier_id")
+            $table->foreignId("dossier_id")->nullable()
             /* ->constrained()
             ->onUpdate('restrict')
             ->onDelete('restrict') */;
-            $table->foreignId("parcelle_id")
+            $table->foreignId("parcelle_id")->nullable()
             /* ->constrained()
             ->onUpdate('restrict')
             ->onDelete('restrict') */;
