@@ -23,7 +23,7 @@ return new class extends Migration
             /* ->constrained()
             ->onUpdate('restrict')
             ->onDelete('restrict') */;
-            $table->integer("dossier_id")->nullable();
+            $table->foreignId("dossier_id")->nullable();
             $table->integer("numparcelle")->nullable();
             $table->integer("lot")->nullable();
             $table->char("section")->nullable();

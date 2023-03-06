@@ -1,6 +1,7 @@
 @extends('parametre')
 @section('parametre')
     <br>
+
     <style>
         .white-section {
             background-color: #FFF;
@@ -482,6 +483,83 @@
                                         </div>
                                     </div>
                                 </div>
+                                {{-- enregistrer une observation --}}
+                                <div class="modal zoomIn faster mx-auto
+                                        undefined animated"
+                                    id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-body ">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-center" id="myModalLabel">Enregistrer
+                                                        un nouveau dossier </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="Post", action="{{ route('observation.store') }}">
+                                                        @csrf
+                                                        {{-- <div class="row mb-3">
+                                        <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
+
+                                        <select class="form-select" name="dossier_id" aria-label="Default select example">
+
+
+
+                                            <option value="{{ $dossier->id }}">{{ $dossier->libelle }}</option>
+
+                                        </select>
+                                    </div> --}}
+                                                        {{-- <div class="row mb-3">
+                                        <label for="nom" class="col-sm-2 col-form-label">Personnel</label>
+
+                                        <select class="form-select" name="personnel_id" aria-label="Default select example">
+                                            <option selected>choisissez le personnel correspondant</option>
+
+                                            @foreach ($personnels as $personnel)
+                                                <option value="{{ $personnel->id }}">{{ $personnel->matricule }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div> --}}
+                                                        {{-- <div class="row mb-3">
+                                                                    <div class="row mb-3">
+                                                            <label for="contenu" class="col-sm-2 col-form-label">le
+                                                                dossier</label>
+                                                            <input type="text" name="dossier_id"
+                                                                value=" {{ $dossier->id }} " id="">
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label for="contenu" class="col-sm-2 col-form-label">Le
+                                                                contenu de
+                                                                l'observation</label>
+                                                            <textarea class="form-control" placeholder="ajouter une observation" name="contenu" id="contenu"
+                                                                style="height: 100px"></textarea>
+                                                        </div>
+
+
+                                                        {{-- <div class="row mb-3">
+                                        <label for="surnom" class="col-sm-2 col-form-label">date d'observation'</label>
+                                        <div class="col-sm-10">
+                                            <input type="datetime-local" name="date_observation" id="dates">
+                                        </div>
+                                    </div> --}}
+                                                        <div class="row modal-footer">
+                                                            <button type="submit"
+                                                                class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                                    class="icon-save1"></i> Enregistrer </button>
+                                                            <button type="button"
+                                                                class="col-auto button button-3d button-rounded button-red"
+                                                                data-dismiss="modal"><i
+                                                                    class="icon-backspace"></i>fermer</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </tr>
                         @endforeach
                     </tbody>
@@ -502,7 +580,8 @@
                                 aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <form method="Post", action="{{ route('dossier.store') }}">
+
+                            {{-- <form method="Post", action="{{ route('dossier.store') }}">
                                 @csrf
 
                                 {{--
@@ -516,7 +595,7 @@
 											<option>Relish</option>
 										</select>
 									</div>
-								</div> --}}
+								</div> -}}
 
                                 <div class="col-lg-6 bottommargin-sm">
                                     <div class="white-section">
@@ -619,81 +698,264 @@
 
                                 </div>
 
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            </form> --}}
+                            <h2>Enregistrement de dossier</h2>
+                            <form  method="Post", action="{{ route('dossier.store') }}" id="signup-form" class="signup-form">
+                                <h3>
+                                    <span class="icon"><i class="ti-user"></i></span>
+                                    <span class="title_text">personnel</span>
+                                </h3>
+                                <fieldset>
+                                    <label>choisir un client:</label>
+                                    <a class="dropdown-item" data-toggle="modal" data-target="#myModal10"
+                                    href="#">
 
-        {{-- enregistrer une observation --}}
-        <div class="modal zoomIn faster mx-auto
-                                    undefined animated" id="myModal2"
-            tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-body ">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title text-center" id="myModalLabel">Enregistrer
-                                un nouveau dossier </h4>
-                            <button type="button" class="close" data-dismiss="modal"
-                                aria-hidden="true">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <form method="Post", action="{{ route('observation.store') }}">
-                                @csrf
-                                {{-- <div class="row mb-3">
-                                    <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
+                                    Ajouer une personne</a>
+                                    <select class="selectpicker" name="personne_physique_id" data-live-search="true">
+
+
+                                        @foreach ($personne_physiques as $personne_physique)
+                                            <option
+                                                data-tokens="{{ $personne_physique->nom }} {{ $personne_physique->prenom }}"
+                                                value=" {{ $personne_physique->id }} ">
+                                                {{ $personne_physique->nom }} {{ $personne_physique->prenom }}
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+
+
+                                    <div class="modal fadeInDown dark fast undefined animated" id="myModal10"
+                                        tabindex="-1" role="dialog" aria-labelledby="myModalLabel "
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-lg ">
+                                            <div class="modal-body "style="background-color: #2f3542;">
+                                                <div class="modal-content" style="background-color: #2f3542;">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title " id="myModalLabel"> <span> Ajoute d'un
+                                                                parcelle </span>
+                                                        </h4>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-hidden="true">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <legend>
+                                                            <span class="step-heading">information du client: </span>
+                                                            <span class="step-number">Step 1 / 4</span>
+                                                        </legend>
+                                                         <div class="form-group">
+                                                            <label for="first_name" class="form-label required">
+                                                                nom</label>
+                                                            <input type="text" name="nom" id="first_name" />
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="last_name" class="form-label required">
+                                                                Prenom</label>
+                                                            <input type="text" name="Prenom" id="last_name" />
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="email" class="form-label required">email
+                                                                </label>
+                                                            <input type="email" name="email" id="email" />
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                            <label for="tel"
+                                                                class="form-label required">telephone</label>
+                                                                <input type="tel" name="tel_personne" id="tel">
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <h3>
+                                    <span class="icon"><i class="ti-email"></i></span>
+                                    <span class="title_text">Parcelle</span>
+                                </h3>
+                                <fieldset>
+                                    <legend>
+                                        <span class="step-heading">information sur la parcelle: </span>
+                                        <span class="step-number">Step 2 / 4</span>
+                                    </legend>
+                                    <div class="form-group">
+                                        <label for="nparcelle" class="form-label required">numero de la parcelle</label>
+                                        <input type="text" name="nparcelle" id="numparcelle" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="lot" class="form-label required">lot</label>
+                                        <input type="text" name="lot" id="lot" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="section" class="form-label required">section</label>
+                                        <input type="text" name="section" id="section" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="superficie" class="form-label required">superficie</label>
+                                        <input type="text" name="superficie" id="superficie" />
+                                    </div>
 
                                     <select class="form-select" name="dossier_id" aria-label="Default select example">
+                                        <option selected>choisissez le proprietaire
+                                        </option>
 
-
-
-                                        <option value="{{ $dossier->id }}">{{ $dossier->libelle }}</option>
-
-                                    </select>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="nom" class="col-sm-2 col-form-label">Personnel</label>
-
-                                    <select class="form-select" name="personnel_id" aria-label="Default select example">
-                                        <option selected>choisissez le personnel correspondant</option>
-
-                                        @foreach ($personnels as $personnel)
-                                            <option value="{{ $personnel->id }}">{{ $personnel->matricule }}</option>
+                                        @foreach ($personne_physiques as $personne_physique)
+                                            <option value="{{ $personne_physique->id }}">
+                                                {{ $personne_physique->nom }}
+                                                {{ $personne_physique->prenom }}
+                                            </option>
                                         @endforeach
                                     </select>
-                                </div> --}}
-                                {{-- <div class="row mb-3">
-                                    <label>Additional Notes:</label>
-                                    <textarea name="freelance-quote-additional-notes" id="freelance-quote-additional-notes" class="form-control" cols="30" rows="8" style="display: none;" aria-hidden="true"></textarea><div role="application" class="tox tox-tinymce" style="visibility: hidden; height: 206px;"><div class="tox-editor-container"><div data-alloy-vertical-dir="toptobottom" class="tox-editor-header"><div role="group" class="tox-toolbar-overlord" aria-disabled="false"><div role="group" class="tox-toolbar__primary"><div title="history" role="toolbar" data-alloy-tabstop="true" tabindex="-1" class="tox-toolbar__group"><button aria-label="Undo" title="Undo" type="button" tabindex="-1" class="tox-tbtn valid tox-tbtn--disabled" aria-disabled="true"><span class="tox-icon tox-tbtn__icon-wrap"><svg width="24" height="24"><path d="M6.4 8H12c3.7 0 6.2 2 6.8 5.1.6 2.7-.4 5.6-2.3 6.8a1 1 0 01-1-1.8c1.1-.6 1.8-2.7 1.4-4.6-.5-2.1-2.1-3.5-4.9-3.5H6.4l3.3 3.3a1 1 0 11-1.4 1.4l-5-5a1 1 0 010-1.4l5-5a1 1 0 011.4 1.4L6.4 8z" fill-rule="nonzero"></path></svg></span></button><button aria-label="Redo" title="Redo" type="button" tabindex="-1" class="tox-tbtn valid" aria-disabled="false"><span class="tox-icon tox-tbtn__icon-wrap"><svg width="24" height="24"><path d="M17.6 10H12c-2.8 0-4.4 1.4-4.9 3.5-.4 2 .3 4 1.4 4.6a1 1 0 11-1 1.8c-2-1.2-2.9-4.1-2.3-6.8.6-3 3-5.1 6.8-5.1h5.6l-3.3-3.3a1 1 0 111.4-1.4l5 5a1 1 0 010 1.4l-5 5a1 1 0 01-1.4-1.4l3.3-3.3z" fill-rule="nonzero"></path></svg></span></button></div><div title="styles" role="toolbar" data-alloy-tabstop="true" tabindex="-1" class="tox-toolbar__group"><button title="Formats" aria-label="Formats" aria-haspopup="true" type="button" unselectable="on" tabindex="-1" class="tox-tbtn tox-tbtn--select tox-tbtn--bespoke valid" aria-expanded="false" style="user-select: none;"><span class="tox-tbtn__select-label">Paragraph</span><div class="tox-tbtn__select-chevron"><svg width="10" height="10"><path d="M8.7 2.2c.3-.3.8-.3 1 0 .4.4.4.9 0 1.2L5.7 7.8c-.3.3-.9.3-1.2 0L.2 3.4a.8.8 0 010-1.2c.3-.3.8-.3 1.1 0L5 6l3.7-3.8z" fill-rule="nonzero"></path></svg></div></button></div><div title="formatting" role="toolbar" data-alloy-tabstop="true" tabindex="-1" class="tox-toolbar__group"><button aria-label="Bold" title="Bold" type="button" tabindex="-1" class="tox-tbtn valid" aria-disabled="false" aria-pressed="false"><span class="tox-icon tox-tbtn__icon-wrap"><svg width="24" height="24"><path d="M7.8 19c-.3 0-.5 0-.6-.2l-.2-.5V5.7c0-.2 0-.4.2-.5l.6-.2h5c1.5 0 2.7.3 3.5 1 .7.6 1.1 1.4 1.1 2.5a3 3 0 01-.6 1.9c-.4.6-1 1-1.6 1.2.4.1.9.3 1.3.6s.8.7 1 1.2c.4.4.5 1 .5 1.6 0 1.3-.4 2.3-1.3 3-.8.7-2.1 1-3.8 1H7.8zm5-8.3c.6 0 1.2-.1 1.6-.5.4-.3.6-.7.6-1.3 0-1.1-.8-1.7-2.3-1.7H9.3v3.5h3.4zm.5 6c.7 0 1.3-.1 1.7-.4.4-.4.6-.9.6-1.5s-.2-1-.7-1.4c-.4-.3-1-.4-2-.4H9.4v3.8h4z" fill-rule="evenodd"></path></svg></span></button><button aria-label="Italic" title="Italic" type="button" tabindex="-1" class="tox-tbtn valid" aria-disabled="false" aria-pressed="false"><span class="tox-icon tox-tbtn__icon-wrap"><svg width="24" height="24"><path d="M16.7 4.7l-.1.9h-.3c-.6 0-1 0-1.4.3-.3.3-.4.6-.5 1.1l-2.1 9.8v.6c0 .5.4.8 1.4.8h.2l-.2.8H8l.2-.8h.2c1.1 0 1.8-.5 2-1.5l2-9.8.1-.5c0-.6-.4-.8-1.4-.8h-.3l.2-.9h5.8z" fill-rule="evenodd"></path></svg></span></button></div><div role="toolbar" data-alloy-tabstop="true" tabindex="-1" class="tox-toolbar__group"><button aria-label="More..." title="More..." aria-haspopup="true" type="button" data-alloy-tabstop="true" tabindex="-1" class="tox-tbtn" aria-expanded="false"><span class="tox-icon tox-tbtn__icon-wrap"><svg width="24" height="24"><path d="M6 10a2 2 0 00-2 2c0 1.1.9 2 2 2a2 2 0 002-2 2 2 0 00-2-2zm12 0a2 2 0 00-2 2c0 1.1.9 2 2 2a2 2 0 002-2 2 2 0 00-2-2zm-6 0a2 2 0 00-2 2c0 1.1.9 2 2 2a2 2 0 002-2 2 2 0 00-2-2z" fill-rule="nonzero"></path></svg></span></button></div></div></div><div class="tox-anchorbar"></div></div><div class="tox-sidebar-wrap"><div class="tox-edit-area"><iframe id="freelance-quote-additional-notes_ifr" frameborder="0" allowtransparency="true" title="Rich Text Area. Press ALT-0 for help." class="tox-edit-area__iframe"></iframe></div><div role="complementary" class="tox-sidebar"><div data-alloy-tabstop="true" tabindex="-1" class="tox-sidebar__slider tox-sidebar--sliding-closed" style="width: 0px;"><div class="tox-sidebar__pane-container"></div></div></div></div></div><div class="tox-statusbar"><div class="tox-statusbar__text-container"><div role="navigation" data-alloy-tabstop="true" class="tox-statusbar__path" aria-disabled="false"><div role="button" data-index="0" tab-index="-1" aria-level="1" tabindex="-1" class="tox-statusbar__path-item" aria-disabled="false">p</div></div><span class="tox-statusbar__branding"><a href="https://www.tiny.cloud/?utm_campaign=editor_referral&amp;utm_medium=poweredby&amp;utm_source=tinymce&amp;utm_content=v5" rel="noopener" target="_blank" tabindex="-1" aria-label="Powered by Tiny">Powered by Tiny</a></span></div><div title="Resize" aria-hidden="true" class="tox-statusbar__resize-handle"><svg width="10" height="10"><g fill-rule="nonzero"><path d="M8.1 1.1A.5.5 0 119 2l-7 7A.5.5 0 111 8l7-7zM8.1 5.1A.5.5 0 119 6l-3 3A.5.5 0 115 8l3-3z"></path></g></svg></div></div><div aria-hidden="true" class="tox-throbber" style="display: none;"></div></div>
-                                </div> --}}
-                                <div class="row mb-3">
-                                    <label for="contenu" class="col-sm-2 col-form-label">Le
-                                        contenu de
-                                        l'observation</label>
-                                    <textarea class="form-control" placeholder="ajouter une observation" name="contenu" id="contenu"
-                                        style="height: 100px"></textarea>
+
+                                    <select class="selectpicker" data-live-search="true">
+                                        <option>
+                                        </option>
+                                        @foreach ($personne_morales as $personne_morale)
+                                            <option data-tokens="{{ $personne_morale->numero_recipicer }}"
+                                                value="{{ $personne_morale->id }}">
+                                                {{ $personne_morale->numero_recipicer }}:
+                                                {{ $personne_morale->email }}</option>
+                                        @endforeach
+                                    </select>
+
+                                    {{-- <div class="select-list">
+                                <select name="country" id="country">
+                                    <option value="">Australia</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="USA">America</option>
+                                </select>
+                            </div>
+                        </div> --}}
+                                </fieldset>
+
+                                <h3>
+                                    <span class="icon"><i class="ti-star"></i></span>
+                                    <span class="title_text">fichier</span>
+                                </h3>
+                                <fieldset>
+                                    <legend>
+                                        <span class="step-heading">information sur le fichier: </span>
+                                        <span class="step-number">Step 3 / 4</span>
+                                    </legend>
+                                    <label for="file" class="col-md-4 col-form-label text-md-right"></label>
+                                <div class="col-md-6">
+                                    <input id="file" type="file" class="form-control @error('file') is-invalid @enderror" name="file" value="{{ old('file') }}">
+                                    @error('file')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
-                                {{-- <div class="row mb-3">
-                                    <label for="surnom" class="col-sm-2 col-form-label">date d'observation'</label>
-                                    <div class="col-sm-10">
-                                        <input type="datetime-local" name="date_observation" id="dates">
+                                    {{-- <div class="form-group">
+                                        <label for="exampleFormControlFile1"></label>
+                                        <input type="file" class="form-control-file" accept=""
+                                            id="exampleFormControlFile1">
+                                    </div> --}}
+                                    {{-- <div class="form-group">
+                                        <label for="employee_id" class="form-label required">Employee ID</label>
+                                        <input type="text" name="employee_id" id="employee_id" />
                                     </div>
-                                </div> --}}
-                                <div class="row modal-footer">
-                                    <button type="submit"
-                                        class="col-auto me-auto button button-3d button-rounded button-green"><i
-                                            class="icon-save1"></i> Enregistrer </button>
-                                    <button type="button" class="col-auto button button-3d button-rounded button-red"
-                                        data-dismiss="modal"><i class="icon-backspace"></i>fermer</button>
-                                </div>
+
+                                    <div class="form-group">
+                                        <label for="designation" class="form-label required">Designation</label>
+                                        <input type="text" name="designation" id="designation" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="department" class="form-label required">Department</label>
+                                        <input type="text" name="department" id="department" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="work_hours" class="form-label required">Working hours</label>
+                                        <input type="text" name="work_hours" id="work_hours" />
+                                    </div>
+                                    --}}
+                                </fieldset>
+
+                                <h3>
+                                    <span class="icon"><i class="ti-credit-card"></i></span>
+                                    <span class="title_text">Commentaire</span>
+                                </h3>
+                                <fieldset>
+                                    <legend>
+                                        <span class="step-heading">faites un commentaire sur le dossier: </span>
+                                        <span class="step-number">Step 4 / 4</span>
+                                    </legend>
+                                    <div class="form-group">
+                                        <textarea class="form-control" placeholder="Ajout de commentaire" name="contenu" id="contenu"
+                                        style="height: 100px"></textarea>
+                                    </div>
+
+{{--
+                                    <div class="form-group">
+                                        <label for="holder_name" class="form-label required">Holder Name</label>
+                                        <input type="text" name="holder_name" id="holder_name" />
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-date">
+                                            <label for="expiry_date" class="form-label">Expiry Date</label>
+                                            <div class="form-date-group">
+                                                <div class="form-date-item">
+                                                    <select id="expiry_date" name="expiry_date"></select>
+                                                    <span class="select-icon"><i class="ti-angle-down"></i></span>
+                                                </div>
+                                                <div class="form-date-item">
+                                                    <select id="expiry_month" name="expiry_month"></select>
+                                                    <span class="select-icon"><i class="ti-angle-down"></i></span>
+                                                </div>
+                                                <div class="form-date-item">
+                                                    <select id="expiry_year" name="expiry_year"></select>
+                                                    <span class="select-icon"><i class="ti-angle-down"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-select">
+                                            <label for="payment_type" class="form-label">Payment type</label>
+                                            <div class="select-list">
+                                                <select name="payment_type" id="payment_type">
+                                                    <option value="">Master Card</option>
+                                                    <option value="Master Card">Master Card</option>
+                                                    <option value="Visa Card">Visa Card</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="card_number" class="form-label required">Card Number</label>
+                                            <input type="number" name="card_number" id="card_number" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="cvc" class="form-label required">CVC</label>
+                                            <input type="text" name="cvc" id="cvc" />
+                                        </div>
+                                    </div>--}}
+                                    <button class="col-auto me-auto button button-3d button-rounded button-green"
+                                        type="submit"><i class="icon-news"></i> Enregister </button>
+                                </fieldset>
+
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
 
         {{-- enregistrer un commentaire --}}
         <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -868,6 +1130,8 @@
                 </div>
             </div>
         </div>
+
+
 
         @if ($message = Session::get('success'))
             <div data-toggle="modal" data-target="#myModal4">

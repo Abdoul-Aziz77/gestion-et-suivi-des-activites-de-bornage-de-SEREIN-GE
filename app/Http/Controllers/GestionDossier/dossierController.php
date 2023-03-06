@@ -46,7 +46,7 @@ class dossierController extends Controller
 
         // la request
 
-            $dossierid = DB::table('dossiers')->insertGetId([
+            $id = DB::table('dossiers')->insertGetId([
             'situation'=>$request->get('situation'),
             'personne_physique_id'=>$request->get('personne_physique_id'),
             'typebornages_id' =>$request->get('typebornages_id'),
@@ -58,8 +58,9 @@ class dossierController extends Controller
 
             'personne_moral_id'=> 1,
             'personne_physique_id' => $request->get('personne_physique_id'),
-            'dossier_id' => $dossierid,
+            'dossier_id' => $id,
             'lot' => $request->get('lot'),
+            'numparcelle'=>$request->get('numparcelle'),
             'section' => $request->get('section'),
             'superficie' => $request->get('superficie'),
 
@@ -70,12 +71,23 @@ class dossierController extends Controller
         $fichiers = new fichier([
 
             'parcelle_id'=> $request->get('parcelle_id'),
-            'dossier_id' => $dossierid,
-            'nom' => $request->get('nom'),
-            'fichier' => $request->get('fichier'),
+            'dossier_id' => $id,
+            'nom' => $request->get('file'),
+            //'fichier' => $request->get('fichier'),
         ]);
+        $path = $request->file('file')->store('files');
 
+        dd($path);
         $fichiers->save();
+$ad = 1;
+        $personne_physiques = new Personne_physique([
+            'nom'=> $request-> get('nom'),
+            'prenom' => $request->get('prenom'),
+            'email' => $request->get('email'),
+            'tel_personne' => $request->get('tel_personne'),
+
+            'adresse_id'=> $ad,
+        ]);
 
         $retour = url()->previous();
 
@@ -231,13 +243,15 @@ class dossierController extends Controller
         //
         $personnels = Personnel::all();
         $dossiers = Dossier::findOrFail($id);
-        $etape_dossiers = Etape_dossier::all();
+        $etape_dossiers = DB::table('etape_dossiers')->where('dossier_id','=',$id)->get();
         $sorties = Sortie::all();
         $observations=Observation::all();
         $personne_physiques = Personne_physique::all();
         $commentaires = Commentaire_dossier::all();
         $utilisateurs = Utilisateur::all();
-        return view('gestionDeDossier.dossier.show',['dossiers'=>$dossiers,'utilisateurs'=>$utilisateurs, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels,'observations'=>$observations, 'commentaires'=>$commentaires]);
+        $parcelles = Parcelle::all();
+        $fichiers = fichier::all();
+        return view('gestionDeDossier.dossier.show',[ 'parcelles'=>$parcelles, 'fichiers'=>$fichiers, 'dossiers'=>$dossiers,'utilisateurs'=>$utilisateurs, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels,'observations'=>$observations, 'commentaires'=>$commentaires]);
 
     }
 

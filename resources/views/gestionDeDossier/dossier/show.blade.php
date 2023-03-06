@@ -13,18 +13,31 @@
                 aria-controls="tab-feeds" aria-labelledby="ui-id-1" aria-selected="true" aria-expanded="true"><a
                     href="#tab-feeds" role="presentation" tabindex="-1" class="ui-tabs-anchor" id="ui-id-1"><i
                         class="icon-rss2"></i>Tache</a></li>
+
             <li role="tab" tabindex="-1" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
                 aria-controls="tab-posts" aria-labelledby="ui-id-2" aria-selected="false" aria-expanded="false"><a
                     href="#tab-posts" role="presentation" tabindex="-1" class="ui-tabs-anchor" id="ui-id-2"><i
                         class="icon-pencil2"></i> Les observations</a></li>
+
             <li role="tab" tabindex="-1" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
                 aria-controls="tab-replies" aria-labelledby="ui-id-3" aria-selected="false" aria-expanded="false"><a
                     href="#tab-replies" role="presentation" tabindex="-1" class="ui-tabs-anchor" id="ui-id-3"><i
                         class="icon-reply"></i> les commentaires</a></li>
+
             <li role="tab" tabindex="-1" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
                 aria-controls="tab-connections" aria-labelledby="ui-id-4" aria-selected="false" aria-expanded="false"><a
                     href="#tab-connections" role="presentation" tabindex="-1" class="ui-tabs-anchor" id="ui-id-4"><i
                         class="icon-users"></i> L'equipe de travail</a></li>
+
+            <li role="tab" tabindex="-1" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
+                aria-controls="tab-connections" aria-labelledby="ui-id-5" aria-selected="false" aria-expanded="false"><a
+                    href="#tab-connections" role="presentation" tabindex="-1" class="ui-tabs-anchor" id="ui-id-5"><i
+                        class="icon-users"></i> Les parcelles</a></li>
+
+            <li role="tab" tabindex="-1" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
+                aria-controls="tab-connections" aria-labelledby="ui-id-4" aria-selected="false" aria-expanded="false"><a
+                    href="#tab-connections" role="presentation" tabindex="-1" class="ui-tabs-anchor" id="ui-id-4"><i
+                        class="icon-users"></i> Les fichiers</a></li>
         </ul>
 
         <div class="tab-container">
@@ -80,7 +93,7 @@
                 aria-labelledby="ui-id-2" role="tabpanel" aria-hidden="true" style="display: none;">
 
                 <!-- observation
-                            ============================================= -->
+                                ============================================= -->
 
 
                 @foreach ($observations as $observation)
@@ -169,8 +182,8 @@
 
                                     <div class="comment-content clearfix">
                                         <div class="comment-author"><a href="#" rel="external nofollow"
-                                                class="#{{-- url --}}">MONE : {{ $commentaire->utilisateur_id }} </a><span><a
-                                                    href="#" title="Permalink to this comment">
+                                                class="#{{-- url --}}">MONE : {{ $commentaire->utilisateur_id }}
+                                            </a><span><a href="#" title="Permalink to this comment">
                                                     {{ $commentaire->date_enregistrement }} </a></span></div>
 
                                         <p> {{ $commentaire->contenu }} </p>
@@ -190,6 +203,81 @@
 
 
 
+            </div>
+            <div class="tab-content clearfix ui-tabs-panel ui-corner-bottom ui-widget-content" id="tab-parcelles"
+                aria-labelledby="ui-id-5" role="tabpanel" aria-hidden="true" style="display: none;">
+                @foreach ($commentaires as $commentaire)
+                    @if ($commentaire->dossier_id == $dossiers->id)
+                        <div class="clear topmargin-sm"></div>
+                        <ol class="commentlist border-0 m-0 p-0 clearfix">
+                            <li class="comment byuser comment-author-_smcl_admin even thread-odd thread-alt depth-1"
+                                id="li-comment-2">
+                                <div class="comment-wrap clearfix">
+
+                                    <section id="content">
+                                        <div class="content-wrap">
+                                            <div class="container clearfix">
+                                                <div class="table-responsive">
+                                                   
+                                                    <table id="datatable1" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                                        <thead class="thead-light">
+                                                            <tr>
+                                                                <th>Id</th>
+                                                                <th>Le lot de la parcelle</th>
+                                                                <th>La section</th>
+                                                                <th>la superficie</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($parcelles as $parcelle)
+                                                                <tr>
+                                                                    <td>{{ $parcelle->id }}</td>
+                                                                    <td>{{ $parcelle->lot }}</td>
+                                                                    <td>{{ $parcelle->section }}</td>
+                                                                    <td> {{ $parcelle->superficie }} </td>
+                                                                    <td>
+                                                                        <div class="input-group mb-3">
+
+                                                                            <button type="button"
+                                                                                class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+                                                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                                                <span class="visually-hidden"></span>Actions
+                                                                            </button>
+                                                                            <ul class="dropdown-menu">
+                                                                                <li><a class="dropdown-item"
+                                                                                        href=" {{ route('parcelle.edit', $parcelle->id) }} ">Modifier</a>
+                                                                                </li>
+                                                                                <li><a class="dropdown-item" class="btn btn-outline-info"
+                                                                                        href=" {{ route('parcelle.show', $parcelle) }} ">detaille</a></li>
+                                                                                <li>
+                                                                                    <form method="POST"
+                                                                                        action="{{ route('parcelle.destroy', $parcelle) }}">
+                                                                                        <!-- CSRF token -->
+                                                                                        @csrf
+                                                                                        <!-- <input type="hidden" name="_method" value="DELETE"> -->
+                                                                                        @method('DELETE')
+                                                                                        <input type="submit" value="Supprimer">
+                                                                                    </form>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <div class="clear"></div>
+                                </div>
+                            </li>
+                        </ol>
+                    @endif
+                @endforeach
             </div>
             <div class="tab-content clearfix ui-tabs-panel ui-corner-bottom ui-widget-content" id="tab-connections"
                 aria-labelledby="ui-id-4" role="tabpanel" aria-hidden="true" style="display: none;">
@@ -317,6 +405,4 @@
         </div>
 
     </div>
-
-
 @endsection

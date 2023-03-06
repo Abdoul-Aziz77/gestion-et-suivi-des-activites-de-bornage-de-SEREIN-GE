@@ -8,17 +8,18 @@
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('style.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('css/dark.css') }}" type="text/css" />
+{{--     <link rel="stylesheet" href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+ --}}    <link rel="stylesheet" href="{{ asset('css/dark.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/font-icons.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/animate.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('template1111/css/style.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('template11/css/style.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/calendar.css') }}" type="text/css" />
-    <link rel="stylesheet"
+   {{--  <link rel="stylesheet"
         href="{{ asset('template11/fonts/themify-icons/themify-icons.css') }}"
-        type="text/css" />
+        type="text/css" /> --}}
     <link rel="stylesheet" href="{{ asset('css/components/bs-datatable.css') }}" type="text/css" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -152,7 +153,7 @@
             @yield('contenu')
 
         </main>
-        <footer id="footer" class="dark">
+       {{--  <footer id="footer" class="dark">
 
             <!-- Copyrights
    ============================================= -->
@@ -205,7 +206,7 @@
                                     <i class="icon-linkedin"></i>
                                     <i class="icon-linkedin"></i>
                                 </a>
-                            </div> --}}
+                            </div> --}
                             <div class="clear"></div>
 
                             <i class="icon-envelope2"></i> info@SEREIN.com <span class="middot">·</span> <i
@@ -214,9 +215,18 @@
                     </div>
                 </div>
             </div><!-- #copyrights end -->
+        </footer> --}}
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Your Website 2021</span>
+                </div>
+            </div>
         </footer>
-    </div>
-    <div id="gotoTop" class="icon-angle-up" style="display: block;"></div>
+    {{-- </div> --}}
+
+
+     <div id="gotoTop" class="icon-angle-up" style="display: block;"></div>
     {{-- <script src="{{ asset('js/js_templ/jquery-3.3.1.min.js') }}"></script>
 
 
@@ -240,17 +250,20 @@
     <script src="{{ asset('js/events-data.js') }}"></script>
     <script src="{{ asset('js/components/bs-select.js') }}"></script>
     <script src="{{ asset('js/components/selectsplitter.js') }}"></script>
-    <script>
+{{--     <script src="{{ asset('js/jquery-easing/jquery.easing.min.js') }}"></script>
+ --}}{{--     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+ --}}
+ <script>
 
-		$('.selectsplitter').selectsplitter();
+    $('.selectsplitter').selectsplitter();
 
-	</script>
+</script>
     <script src="{{ asset('js/functions.js') }}"></script>
 
 
 {{-- create dossier --}}
 
- {{-- <!-- JS -->
+  <!-- JS -->
  <script src="{{ asset('template11/vendor/jquery/jquery.min.js') }}"></script>
 
  <script src="{{ asset('template11/vendor/jquery-validation/dist/jquery.validate.min.js') }}"></script>
@@ -261,95 +274,95 @@
 
  <script src="{{ asset('template11/vendor/minimalist-picker/dobpicker.js') }}"></script>
 
- <script src="{{ asset('template11/js/main.js') }}"></script> --}}
+ <script src="{{ asset('template11/js/main.js') }}"></script>
 
     <!-- Charts JS
  ============================================= -->
 
 
-    <script>
-        var config = {
-            type: 'pie',
-            data: {
-                datasets: [{
-                    data: [
-                        /* randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(),
-                        randomScalingFactor(), */
-                        10,
-                        15,
-                        50,
-                        600,
-                        200,
-                    ],
-                    backgroundColor: [
-                        window.chartColors.red,
-                        window.chartColors.orange,
-                        window.chartColors.leaf,
-                        window.chartColors.green,
-                        window.chartColors.blue,
-                    ],
-                    label: 'Dataset 1'
-                }],
-                labels: [
-                    "Dossier annuler",
-                    "Dossier suspendu",
-                    "nouveau dossier",
-                    "Dossier finnaliser",
-                    "Dossier en cours"
-                ]
-            },
-            options: {
-                responsive: true
-            }
-        };
-
-        window.onload = function() {
-            var ctx = document.getElementById("chart-0").getContext("2d");
-            window.myPie = new Chart(ctx, config);
-        };
-        //var colorNames = Object.keys(window.chartColors);
-    </script>
-
-    <script>
-        // calendrier
-        var cal = $('#calendar').calendario({
-                onDayClick: function($el, $contentEl, dateProperties) {
-
-                    for (var key in dateProperties) {
-                        console.log(key + ' = ' + dateProperties[key]);
-                    }
-
-                    $('#clicked-month').html(dateProperties['month']);
-                    $('#clicked-day').html(dateProperties['day']);
-
-                },
-                caldata: canvasEvents
-            }),
-            $month = $('#calendar-month').html(cal.getMonthName()),
-            $year = $('#calendar-year').html(cal.getYear());
-
-        $('#calendar-next').on('click', function() {
-            cal.gotoNextMonth(updateMonthYear);
-        });
-        $('#calendar-prev').on('click', function() {
-            cal.gotoPreviousMonth(updateMonthYear);
-        });
-        $('#calendar-current').on('click', function() {
-            cal.gotoNow(updateMonthYear);
-        });
-
-        function updateMonthYear() {
-            $month.html(cal.getMonthName());
-            $year.html(cal.getYear());
+ <script>
+    var config = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [
+                    /* randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(),
+                    randomScalingFactor(), */
+                    10,
+                    15,
+                    50,
+                    600,
+                    200,
+                ],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.leaf,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                "Dossier annuler",
+                "Dossier suspendu",
+                "nouveau dossier",
+                "Dossier finnaliser",
+                "Dossier en cours"
+            ]
+        },
+        options: {
+            responsive: true
         }
+    };
 
-        skrollr.init({
-            forceHeight: false
-        });
-    </script>
+    window.onload = function() {
+        var ctx = document.getElementById("chart-0").getContext("2d");
+        window.myPie = new Chart(ctx, config);
+    };
+    //var colorNames = Object.keys(window.chartColors);
+</script>
+
+<script>
+    // calendrier
+    var cal = $('#calendar').calendario({
+            onDayClick: function($el, $contentEl, dateProperties) {
+
+                for (var key in dateProperties) {
+                    console.log(key + ' = ' + dateProperties[key]);
+                }
+
+                $('#clicked-month').html(dateProperties['month']);
+                $('#clicked-day').html(dateProperties['day']);
+
+            },
+            caldata: canvasEvents
+        }),
+        $month = $('#calendar-month').html(cal.getMonthName()),
+        $year = $('#calendar-year').html(cal.getYear());
+
+    $('#calendar-next').on('click', function() {
+        cal.gotoNextMonth(updateMonthYear);
+    });
+    $('#calendar-prev').on('click', function() {
+        cal.gotoPreviousMonth(updateMonthYear);
+    });
+    $('#calendar-current').on('click', function() {
+        cal.gotoNow(updateMonthYear);
+    });
+
+    function updateMonthYear() {
+        $month.html(cal.getMonthName());
+        $year.html(cal.getYear());
+    }
+
+    skrollr.init({
+        forceHeight: false
+    });
+</script>
 
 </body>
 
