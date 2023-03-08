@@ -49,16 +49,16 @@ class etapeController extends Controller
             'description'=>'required',
         ]);
 
-        // la request
-        $etapes = new Etape([
-            'libelle'=> $request-> get('libelle'),
-            'niveau'=> $request-> get('niveau'),
-            'description' => $request->get('description'),
-        ]);
+    $etapes = new Etape([
+        'libelle'=> $request-> get('libelle'),
+        'niveau'=> $request-> get('niveau'),
+        'description' => $request->get('description'),
+    ]);
 
-        $etapes->save();
-       // $retour = url()->previous();
-        return redirect('/')->with('success', "l'etape est enregistrer avec succès");
+    $etapes->save();
+
+       $retour = url()->previous();
+        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
     }
 
     /**
@@ -122,6 +122,6 @@ class etapeController extends Controller
         return redirect('/')->with('success', "l'etape est supprimer avec succès");
     }
 
-    
+
 
 }

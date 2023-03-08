@@ -19,6 +19,7 @@ use App\Models\typebornage;
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\Isset_;
 
 /* la fonction permettant de voir la liste des dossiers sur l'acceuil */
 
@@ -45,29 +46,109 @@ class dossierController extends Controller
 
 
         // la request
+        $ad = 1;
+        $dat = date("y/m/d H:i:s");
+        $personne_physique_id = 1;
 
+        /* Enregistrement d'une personne */
+$verif_personne = $request-> get('nom');
+        if(isset($verif_personne))
+{
+    $personne_physiques =$id = DB::table('personne_physiques')->insertGetId([
+        'nom'=> $request-> get('nom'),
+        'prenom' => $request->get('prenom'),
+        'email' => $request->get('email'),
+        'tel_personne' => $request->get('tel_personne'),
+
+        'adresse_id'=> $ad,
+    ]);
+    $personne_physique_id = $personne_physiques;
+}
+
+/* Enregistrement de dossiers */
+$verif_idperson = $request-> get('personne_physique_id');
+        if(isset($verif_idperson))
+        {
             $id = DB::table('dossiers')->insertGetId([
+                'situation'=>$request->get('situation'),
+                'personne_physique_id'=>$personne_physique_id,
+                'typebornages_id' =>$request->get('typebornages_id'),
+                'date_enregistrement'=> $dat,
+            ]);
+        }
+        else{
+            $id = DB::table('dossiers')->insertGetId([
+                'situation'=>$request->get('situation'),
+                'personne_physique_id'=>$request->get('personne_physique_id'),
+                'typebornages_id' =>$request->get('typebornages_id'),
+            ]);
+        }
+
+
+
+        /* $id_etat = DB::table('etat_dossiers')->insertGetId([
             'situation'=>$request->get('situation'),
             'personne_physique_id'=>$request->get('personne_physique_id'),
             'typebornages_id' =>$request->get('typebornages_id'),
-        ]);
+        ]); */
+
+        /* Enregistrement d'un parcelle du dossier */
+        $verif_parcelle = $request->get('superficie');
+        if(isset($verif_parcelle))
+        {
+            $parcelles = new Parcelle([
+
+                'personne_moral_id'=> 1,
+                'personne_physique_id' => $request->get('personne_physique_id'),
+                'dossier_id' => $id,
+                'lot' => $request->get('lot'),
+                'numparcelle'=>$request->get('numparcelle'),
+                'section' => $request->get('section'),
+                'superficie' => $request->get('superficie'),
+
+            ]);
+            $parcelles->save();
+        }
+
+/* Enregistrement de commentaire */
+        $verif_commentaire = $request-> get('contenu');
+        if(isset($verif_commentaire))
+        {
+            $commentaire_dossiers = new commentaire_dossier([
+                'dossier_id'=> $id,
+                //'utilisateur_id' => $request->get('utilisateur_id'),
+                'contenu'=> $request-> get('contenu'),
+                'date_enregistrement'=> $dat,
+            ]);
+            $commentaire_dossiers->save();
+        }
+
+        /* enregistrement d'une etape du dossier */
+
+        if(isset($id))
+        {
+            $etape_dossiers = new Etape_dossier([
+                'etapes_id'=>$ad,
+                'dossier_id'=>$id,
+                'statut' => 1,
+                'date_realisation'=>$dat,
+            ]);
+            $etape_dossiers->save();
+
+            DB::table('etat_dossiers')->insert([
+                'dossier_id'=>$id,
+                'libelle'=>'Nouveau',
+                'description'=>'un nouveau dossier enregistrer',
+            ]);
+
+        }
 
 
 
-        $parcelles = new Parcelle([
-
-            'personne_moral_id'=> 1,
-            'personne_physique_id' => $request->get('personne_physique_id'),
-            'dossier_id' => $id,
-            'lot' => $request->get('lot'),
-            'numparcelle'=>$request->get('numparcelle'),
-            'section' => $request->get('section'),
-            'superficie' => $request->get('superficie'),
-
-        ]);
-
-        $parcelles->save();
-
+        /* enregistrement de fichier */
+        $verif_fichier = $request->get('file');
+        if(isset($verif_fichier))
+       {
         $fichiers = new fichier([
 
             'parcelle_id'=> $request->get('parcelle_id'),
@@ -75,19 +156,11 @@ class dossierController extends Controller
             'nom' => $request->get('file'),
             //'fichier' => $request->get('fichier'),
         ]);
-        $path = $request->file('file')->store('files');
-
-        dd($path);
         $fichiers->save();
-$ad = 1;
-        $personne_physiques = new Personne_physique([
-            'nom'=> $request-> get('nom'),
-            'prenom' => $request->get('prenom'),
-            'email' => $request->get('email'),
-            'tel_personne' => $request->get('tel_personne'),
+        /* $path = $request->file('file')->store('file');
 
-            'adresse_id'=> $ad,
-        ]);
+        dd($path); */
+       }
 
         $retour = url()->previous();
 
@@ -194,8 +267,7 @@ $ad = 1;
 
        // $personnes= DB::table('personne_physiques')->get();
         //$etapes  = DB::table('etapes')->get();
-        //$etat_sorties  = DB::table('etat_sortis')->get();
-
+        $etat_dossiers  = DB::table('etat_dossiers')->latest()->get();
         $personnels = Personnel::all();
         $dossiers = Dossier::all();
         //$etape_dossiers = Etape_dossier::all();
@@ -209,7 +281,7 @@ $ad = 1;
         $type_bornages = typebornage::all();
         $etape_dossiers = Etape_dossier::all() /* Etape_dossier::all()->last()->get() */;
         $etat_sorties=Etat_sorti::all();
-        return view('gestionDeDossier.dossier.index',['type_bornages'=>$type_bornages, 'dossiers'=>$dossiers ,/* 'personnes'=>$personnes, */'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'personne_morales'=>$personne_morales, /* 'etat_sorties'=>$etat_sorties */ ]);
+        return view('gestionDeDossier.dossier.index',['dossiers'=>$dossiers ,'etat_dossiers'=>$etat_dossiers,'type_bornages'=>$type_bornages, /* 'personnes'=>$personnes, */'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'personne_morales'=>$personne_morales, /* 'etat_sorties'=>$etat_sorties */ ]);
 
     }
 

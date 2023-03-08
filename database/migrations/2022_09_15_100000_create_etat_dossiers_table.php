@@ -13,8 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('etats', function (Blueprint $table) {
+        Schema::create('etat_dossiers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("dossier_id")
+            /* ->constrained()
+            ->onUpdate('restrict')
+            ->onDelete('restrict') */;
             $table->string("libelle");
             $table->text("description")->nullable();
 
@@ -29,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('etats');
+        Schema::dropIfExists('etat_dossiers');
     }
 };

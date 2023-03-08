@@ -20,7 +20,7 @@ class etapeDossierController extends Controller
     {
         //
         $etape_dossiers = Etape_dossier::all();
-        return view('gestionDeDossier.EtapeDossier.index', ['etape_dossiers'=>$etape_dossiers]);
+        return view('gestionDeDossier.EtapeDossier.index', ['etape_dossiers' => $etape_dossiers]);
     }
 
     /**
@@ -33,7 +33,7 @@ class etapeDossierController extends Controller
         //
         $etapes = Etape::all();
         $dossiers = Dossier::all();
-        return view('gestionDeDossier.EtapeDossier.create',['etapes'=>$etapes, 'dossiers'=>$dossiers]);
+        return view('gestionDeDossier.EtapeDossier.create', ['etapes' => $etapes, 'dossiers' => $dossiers]);
     }
 
     /**
@@ -46,20 +46,43 @@ class etapeDossierController extends Controller
     {
         //
         $request->validate([
-            'statut'=>'required',
-            'date_realisation'=>'required',
+            'statut' => 'required',
+            'date_realisation' => 'required',
         ]);
 
         // request
+        $etape =  $request->get('etapes_id');
+        $niv = DB::table('etapes')
+            ->where('id', '=', $etape)->value('niveau');
+        // la request
+if($niv>2)
+{
+    $af = DB::table('etat_dossiers')
+            ->where('dossier_id', '=', $request->get('dossier_id'))
+            ->update([
+                'libelle' => 'En Cours',
+                'description' => 'un dossier qui est toujours ce les technicien',
+            ]);
+}
+else{
+    DB::table('etat_dossiers')->insert([
+        'dossier_id'=>$request->get('dossier_id'),
+        'libelle' => 'Nouveau',
+        'description' => "un dossier qui n'a pas encore depasse d'etape d'affectation ",
+    ]);
+}
         $etape_dossiers = new Etape_dossier([
-            'etapes_id'=>$request->get('etapes_id'),
-            'dossier_id'=>$request->get('dossier_id'),
+            'etapes_id' => $request->get('etapes_id'),
+            'dossier_id' => $request->get('dossier_id'),
             'statut' => $request->get('statut'),
-            'date_realisation'=>$request->get('date_realisation'),
+            'date_realisation' => $request->get('date_realisation'),
         ]);
         $etape_dossiers->save();
+        $retour = url()->previous();
 
-        return redirect('/')->with('success', "l'etape du dossier a été enregistrer avec succès");
+        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
+
+        //return redirect('/')->with('success', "l'etape du dossier a été enregistrer avec succès");
     }
 
     /**
@@ -72,9 +95,8 @@ class etapeDossierController extends Controller
     {
         //
 
-        $etape_dossiers=Etape_dossier::findOrFail($id);
-        return view('gestionDeDossier.EtapeDossier.show',['etape_dossiers'=>$etape_dossiers]);
-
+        $etape_dossiers = Etape_dossier::findOrFail($id);
+        return view('gestionDeDossier.EtapeDossier.show', ['etape_dossiers' => $etape_dossiers]);
     }
 
     /**
@@ -86,13 +108,12 @@ class etapeDossierController extends Controller
     public function edit($id)
     {
         //
-        $x=$id;
+        $x = $id;
         $Etape_dossier = Etape_dossier::all();
-        $etape_dossiers=$Etape_dossier->find(2);
+        $etape_dossiers = $Etape_dossier->find(2);
         $dossiers = Dossier::all();
         $etapes = Etape::all();
-        return view('gestionDeDossier.EtapeDossier.edit',['etape_dossiers'=>$etape_dossiers,'etapes'=>$etapes, 'dossiers'=>$dossiers]);
-
+        return view('gestionDeDossier.EtapeDossier.edit', ['etape_dossiers' => $etape_dossiers, 'etapes' => $etapes, 'dossiers' => $dossiers]);
     }
 
     /**
@@ -106,11 +127,11 @@ class etapeDossierController extends Controller
     {
         //
 
-        $etape_dossiers=Etape_dossier::findOrFail($id);
+        $etape_dossiers = Etape_dossier::findOrFail($id);
         $etape_dossiers->etapes_id = $request->get('etapes_id');
-        $etape_dossiers->dossier_id=$request->get('dossier_id');
+        $etape_dossiers->dossier_id = $request->get('dossier_id');
         $etape_dossiers->statut = $request->get('statut');
-        $etape_dossiers->date_realisation =$request->get('date_realisation');
+        $etape_dossiers->date_realisation = $request->get('date_realisation');
         $etape_dossiers->update();
         return redirect('/')->with('success', "l'etape de dossier est modifier avec succès");
     }
@@ -124,7 +145,7 @@ class etapeDossierController extends Controller
     public function destroy($id)
     {
         //
-        $etape_dossiers=Etape_dossier::findOrFail($id);
+        $etape_dossiers = Etape_dossier::findOrFail($id);
         $etape_dossiers->delete();
         return redirect('/')->with('success', "l'etape de dossier est supprimer avec succès");
     }
@@ -132,38 +153,92 @@ class etapeDossierController extends Controller
     public function annuler($id)
     {
         //
-$etap_id = DB::table('etapes')->where('niveau','=',0)->value('id');
-$dat = date("y/m/d H:i:s");
-        $etape_dossiers = new Etape_dossier([
-            'etapes_id'=>$etap_id,
-            'dossier_id'=>$id,
-            'statut' => 1,
-            'date_realisation'=>$dat,
-        ]);
-        $etape_dossiers->save();
+        $etap_id = DB::table('etapes')->where('niveau', '=', 0)->value('id');
+        $dat = date("y/m/d H:i:s");
+        $af = DB::table('etat_dossiers')
+            ->where('dossier_id', '=', $id)
+            ->update([
+                'libelle' => 'Annuler',
+                'description' => 'Dossier Annuler',
+            ]);
 
-        return redirect('/')->with('success', "l'etape est supprimer avec succès");
+            $retour = url()->previous();
+
+            return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
+
+       // return redirect('/')->with('success', "l'etape est supprimer avec succès");
+    }
+
+    public function annul_suspension($id)
+    {
+        //
+        $etape_dossiers = DB::table('etape_dossiers')->latest()
+            ->where('dossier_id', '=', $id)->value('id');
+
+        $affected = DB::table('etape_dossiers')
+            ->where('id', '=', $etape_dossiers)
+            ->update([
+                'statut' => 1
+            ]);
+            $etape = DB::table('etape_dossiers')
+            ->where('id', '=', $etape_dossiers)->value('etapes_id');
+            $niv = DB::table('etapes')
+            ->where('id', '=', $etape)->value('niveau');
+            if($niv>2)
+            {
+                $af = DB::table('etat_dossiers')
+            ->where('dossier_id', '=', $id)
+            ->update([
+                'libelle' => 'En Cours',
+                'description' => 'un dossier qui est toujours ce les technicien',
+            ]);
+            }
+            else
+            {
+                $af = DB::table('etat_dossiers')
+                ->where('dossier_id', '=', $id)
+                ->update([
+                    'libelle' => 'Nouveau',
+                    'description' => "un dossier qui n'a pas encore depasse d'etape d'affectation ",
+                ]);
+            }
+
+            $retour = url()->previous();
+
+            return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
+
+        //return redirect('/')->with('success', "l'etape est supprimer avec succès");
     }
 
     public function suspendre($id)
     {
         //
 
-        $etape_dossiers=DB::table('etape_dossiers')->latest()
-        ->where('dossier_id','=',$id)->value('id')
-        ;
+        $etape_dossiers = DB::table('etape_dossiers')->latest()
+            ->where('dossier_id', '=', $id)->value('id');
 
         $affected = DB::table('etape_dossiers')
-              ->where('id', '=',$etape_dossiers)
-              ->update([
+            ->where('id', '=', $etape_dossiers)
+            ->update([
                 'statut' => 0
             ]);
+        $af = DB::table('etat_dossiers')
+            ->where('dossier_id', '=', $id)
+            ->update([
+                'libelle' => 'Suspendu',
+                'description' => 'Dossier suspendu',
+            ]);
 
-      /*  // $etape_dossiers->etapes_id = $request->get('etapes_id');
+
+        /*  // $etape_dossiers->etapes_id = $request->get('etapes_id');
         //$etape_dossiers->dossier_id=$request->get('dossier_id');
         $etape_dossiers->statut = 0;
        // $etape_dossiers->date_realisation =$request->get('date_realisation');
         $etape_dossiers->update(); */
-        return redirect('/')->with('success', "l'etape de dossier est modifier avec succès");
+        $retour = url()->previous();
+
+        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
+
+        //return redirect('/')->with('success', "l'etape de dossier est modifier avec succès");
     }
 }

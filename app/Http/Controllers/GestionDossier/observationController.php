@@ -46,14 +46,22 @@ class observationController extends Controller
     public function store(Request $request)
     {
         //
-        $observations = new Observation([
+        $dat = date("y/m/d H:i:s");
+        $commentaire_dossiers = new Observation([
+            'dossier_id'=> $request-> get('dossier_id'),
+            //'utilisateur_id' => $request->get('utilisateur_id'),
+            'contenu'=> $request-> get('contenu'),
+            'date_observation'=> $dat,
+        ]);
+        $commentaire_dossiers->save();
+        /*$observations = new Observation([
             'dossier_id'=> $request-> get('dossier_id'),
             'personnel_id' => $request->get('personnel_id'),
             'contenu'=> $request-> get('contenu'),
             'date_observation'=> $request-> get('date_observation'),
         ]);
 
-        $observations->save();
+        $observations->save();*/
 
         return redirect(route("dossier.index"))->with('success', "L'observation est enregistrer avec succès");
     }

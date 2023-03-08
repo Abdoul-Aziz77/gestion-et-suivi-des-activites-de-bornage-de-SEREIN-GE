@@ -75,7 +75,9 @@ Route::any('/bornage-anuller/{id}', [etapeDossierController::class, 'annuler'])-
 Route::resource('type de bornage', typeBornageController::class);
 
 Route::resource('but', butController::class);
+
 Route::get('/bornage-suspendu/{id}', [etapeDossierController::class, 'suspendre'])->name('Suspendu');
+Route::get('/bornage-suspension-annuler/{id}', [etapeDossierController::class, 'annul_suspension'])->name('annul_suspension');
 
 Route::resource('habilitation', habilitationController::class);
 

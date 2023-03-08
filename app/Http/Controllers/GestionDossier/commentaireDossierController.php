@@ -46,15 +46,23 @@ class commentaireDossierController extends Controller
      */
     public function store(Request $request)
     {
+        $dat = date("y/m/d H:i:s");
         //
         $commentaire_dossiers = new commentaire_dossier([
+            'dossier_id'=> $request-> get('dossier_id'),
+            //'utilisateur_id' => $request->get('utilisateur_id'),
+            'contenu'=> $request-> get('contenu'),
+            'date_enregistrement'=> $dat,
+        ]);
+        $commentaire_dossiers->save();
+        /*$commentaire_dossiers = new commentaire_dossier([
             'dossier_id'=> $request-> get('dossier_id'),
             'utilisateur_id' => $request->get('utilisateur_id'),
             'contenu'=> $request-> get('contenu'),
             'date_enregistrement'=> $request-> get('date_enregistrement'),
         ]);
 
-        $commentaire_dossiers->save();
+        $commentaire_dossiers->save();*/
 
         return redirect('/')->with('success', "le commentaire_dossier est enregistrer avec succès");
     }

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Dossier;
 use App\Models\fichier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class fichierController extends Controller
 {
@@ -42,18 +44,24 @@ class fichierController extends Controller
     public function store(Request $request)
     {
         //
-
-        $fichiers = new fichier([
-           
+        //$path = $request->file('nom')->store('public'); 
+        //$donnes= $request->nom;
+        //$donne =$donnes->get('originalName');
+        //dd($donnes);
+        //$contents = Storage::get("$request->get('nom')");
+        //storage::putFile('public',$request->file('nom'));
+        DB::table('fichiers')->insert([
             'parcelle_id'=> $request->get('parcelle_id'),
-            'dossier_id' =>$request->get('dossier_id'),
-            'nom' => $request->get('nom'),
-            'fichier' => $request->get('fichier'),
+            'dossier_id'=>$request->get('dossier_id'),
+            'nom'=> $request->get('nom'),
+            'fichier' => $request->get('nom'),
         ]);
+        
+        $path = $request->file('nom')->storeas('public', 'dossier1');
 
-        $fichiers->save();
+        $retour = url()->previous();
 
-        return redirect('/');
+        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
     }
 
     /**
@@ -104,6 +112,8 @@ class fichierController extends Controller
         //
         $fichiers=fichier::findOrFail($id);
         $fichiers->delete();
-        return redirect('/')->with('success', "le fichier est supprimer avec succès");
+        $retour = url()->previous();
+
+        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
     }
 }

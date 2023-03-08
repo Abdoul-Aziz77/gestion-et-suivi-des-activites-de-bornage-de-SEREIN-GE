@@ -19,12 +19,12 @@ return new class extends Migration
             /* ->constrained()
             ->onUpdate('restrict')
             ->onDelete('restrict') */;
-            $table->foreignId("utilisateur_id")->nullable();
+            $table->foreignId("utilisateur_id")->nullable()
             /* ->constrained()
             ->onUpdate('restrict')
             ->onDelete('restrict') */;
             $table->text("contenu");
-            $table->date("date_enregistrement")->nullable();;
+            $table->date("date_enregistrement")->nullable();
             $table->timestamps();
         });
     }

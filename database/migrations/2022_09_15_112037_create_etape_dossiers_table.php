@@ -24,7 +24,7 @@ return new class extends Migration
             ->onUpdate('restrict')
             ->onDelete('restrict') */;
             $table->date("date_realisation");
-            $table->string("statut")->nullable(); // une liste de a selectionner
+            $table->string("statut")->nullable();
             $table->timestamps();
         });
     }
