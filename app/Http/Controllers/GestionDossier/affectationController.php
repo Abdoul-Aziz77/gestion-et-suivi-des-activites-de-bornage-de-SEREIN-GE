@@ -3,25 +3,19 @@
 namespace App\Http\Controllers\GestionDossier;
 
 use App\Http\Controllers\Controller;
-use App\Models\Dossier;
-use App\Models\fichier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
-class fichierController extends Controller
+class affectationController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         //
-        $fichiers = fichier::all();
-        $dossiers = Dossier::all();
-        return view('gestionDeDossier.fichier.index',['fichiers'=>$fichiers,'dossiers'=>$dossiers]);
     }
 
     /**
@@ -32,7 +26,6 @@ class fichierController extends Controller
     public function create()
     {
         //
-        return view('gestionDeDossier.fichier.create');
     }
 
     /**
@@ -43,25 +36,48 @@ class fichierController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        //$path = $request->file('nom')->store('public');
-        //$donnes= $request->nom;
-        //$donne =$donnes->get('originalName');
-        //dd($donnes);
-        //$contents = Storage::get("$request->get('nom')");
-        //storage::putFile('public',$request->file('nom'));
-        //dd($_FILES["nom"]);
-        $nom = $_FILES["nom"]["name"];
-        $path = $request->file('nom')->storeas('public', "$nom");
-        $fichiers = Storage::url($path);
-            $fichiers = new fichier([
-            'parcelle_id'=> $request->get('parcelle_id'),
+        // Les variables
+        $dat = date("y/m/d H:i:s");
+        $dossier_id = $request->get('dossier_id');
+        $etap_id = DB::table('etapes')
+                    ->where('niveau', '=', 2)
+                    ->value('id');
+
+        $etape_id = DB::table('etape_dossiers')->latest()
+        ->where('dossier_id', '=', $dossier_id)->value('etapes_id');
+
+        $niveau = DB::table('etapes')
+                    ->where('id', '=', $etape_id)
+                    ->value('niveau');
+
+        /* $etaD_id = DB::table('etape_dossiers')
+                    ->where('dossier_id', '=', $dossier_id)
+                    ->value('id'); */
+
+        if($niveau == 1){
+// l'affection
+        DB::table('affectation')->insert([
             'dossier_id'=>$request->get('dossier_id'),
-            'nom'=>$nom,
-            'fichier' => $fichiers,
+            'personne_physique_id'=>$request->get('personnel_id'),
+            'date_affection'=>$dat,
         ]);
-        $fichiers->save();
-        
+// changement d'etape
+        $af = DB::table('etape_dossiers')
+                    ->insert([
+                'etapes_id' => $etap_id,
+                'dossier_id' => $request->get('dossier_id'),
+                'statut' => 1,
+                'date_realisation'=>$dat,
+        ]);
+        } else{
+            // l'affection
+        DB::table('affectation')->insert([
+            'dossier_id'=>$request->get('dossier_id'),
+            'personne_physique_id'=>$request->get('personnel_id'),
+            'date_affection'=>$dat,
+        ]);
+        }
+
         $retour = url()->previous();
         return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
     }
@@ -86,9 +102,6 @@ class fichierController extends Controller
     public function edit($id)
     {
         //
-        $fichiers = fichier::findOrFail($id);
-        $dossiers = Dossier::all();
-        return view('gestionDeDossier.fichier.index',['fichiers'=>$fichiers,'dossiers'=>$dossiers]);
     }
 
     /**
@@ -112,10 +125,5 @@ class fichierController extends Controller
     public function destroy($id)
     {
         //
-        $fichiers=fichier::findOrFail($id);
-        $fichiers->delete();
-        $retour = url()->previous();
-
-        return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
     }
 }

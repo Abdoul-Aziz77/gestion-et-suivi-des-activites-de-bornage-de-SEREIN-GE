@@ -152,7 +152,7 @@ else{
 
     public function annuler($id)
     {
-        //
+        // Annulation de dossier
         $etap_id = DB::table('etapes')->where('niveau', '=', 0)->value('id');
         $dat = date("y/m/d H:i:s");
         $af = DB::table('etat_dossiers')
@@ -163,7 +163,6 @@ else{
             ]);
 
             $retour = url()->previous();
-
             return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
 
        // return redirect('/')->with('success', "l'etape est supprimer avec succès");
@@ -171,7 +170,7 @@ else{
 
     public function annul_suspension($id)
     {
-        //
+        // l'annulation de la suspension de dossier
         $etape_dossiers = DB::table('etape_dossiers')->latest()
             ->where('dossier_id', '=', $id)->value('id');
 
@@ -180,6 +179,7 @@ else{
             ->update([
                 'statut' => 1
             ]);
+            
             $etape = DB::table('etape_dossiers')
             ->where('id', '=', $etape_dossiers)->value('etapes_id');
             $niv = DB::table('etapes')

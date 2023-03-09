@@ -67,11 +67,23 @@
                     </tfoot>
                     <tbody>
                         @foreach ($dossiers as $dossier)
+                        @foreach ($affectations as $affectation)
+                                @if ($affectation->id===$dossier->id)
+                                        
+                                @endif
+                        @endforeach
                             <tr>
 
                                 <td>{{ $dossier->id }}</td>
                                 <td> {{ $dossier->date_enregistrement }} </td>
-                                <td> {{ $dossier->created_at }} </td>
+                                <td>
+                                    @foreach ($affectations as $affectation)
+                                        @if ($affectation->id===$dossier->id)
+                                        {{ $affectation->date_affection }} 
+                                        @endif
+                                    @endforeach
+                                </td>
+                                
                                 <td>
                                     @foreach ($personne_physiques as $personne_physique)
                                         @if ($dossier->personne_physique_id === $personne_physique->id)
@@ -80,12 +92,15 @@
                                     @endforeach
                                 </td>
                                 <td>
-                                    @foreach ($personne_physiques as $personne_physique)
-                                        @if ($dossier->personne_physique_id === $personne_physique->id)
-                                            {{ $personne_physique->nom }} {{ $personne_physique->prenom }}
+                                    @foreach ($affectations as $affectation)
+                                        @if ($affectation->id===$dossier->id)
+                                        
+                                            {{ $affectation->nom }} {{ $affectation->prenom }}
+                                        
                                         @endif
                                     @endforeach
                                 </td>
+                                
                                 <td>
                                     @foreach ($etat_dossiers as $etat_dossier)
                                         @if ($dossier->id === $etat_dossier->dossier_id)
@@ -151,8 +166,24 @@
                                                 <span class="visually-hidden"></span>Actions
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#">Affecter le dossier</a>
+                                                <li><a class="dropdown-item" href="#"></a>
                                                 </li>
+                                                @foreach ($etapeDossiers as $etapeDossier)
+                                                @if ($etapeDossier->dossier_id ==$dossier->id )
+                                                @if ($etapeDossier->niveau > 1)
+                                                <li><a class="dropdown-item " data-toggle="modal"
+                                                    data-target="#myModal12"
+                                                    href="#{{-- {{ route('commentaire dossier.create') }} --}}">Reaffecter le dossier</a></li>
+                                                @endif
+                                                @break
+                                                @else
+                                                <li><a class="dropdown-item " data-toggle="modal"
+                                                    data-target="#myModal12"
+                                                    href="#{{-- {{ route('commentaire dossier.create') }} --}}">Affecter le dossier</a></li>
+                                                @endif
+                                                    @break
+                                                @endforeach
+                                                
                                                 <li><a class="dropdown-item " data-toggle="modal"
                                                         data-target="#myModal3"
                                                         href="#{{-- {{ route('commentaire dossier.create') }} --}}">Commentaire</a></li>
@@ -186,486 +217,486 @@
                                             </ul>
                                         </div>
                                     @break
-                                @endif
-                            @break
+                                    @endif
+                                    @break
 
-                        @endif
-                    @endforeach
+                                    @endif
+                                @endforeach
 
 
-                    {{-- changer l'etape d'un dossier --}}
-                    <div class="modal fadeInDown dark fast undefined animated" id="myModal4" tabindex="-1"
-                        role="dialog" aria-labelledby="myModalLabel " aria-hidden="true">
-                        <div class="modal-dialog modal-lg ">
-                            <div class="modal-body "style="background-color: #2f3542;">
-                                <div class="modal-content" style="background-color: #2f3542;">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title " id="myModalLabel"> <span> Ajout d'un
-                                                nouveau etape au dossier</span>
-                                        </h4>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">&times;</button>
+                                {{-- changer l'etape d'un dossier --}}
+                                <div class="modal fadeInDown dark fast undefined animated" id="myModal4" tabindex="-1"
+                                    role="dialog" aria-labelledby="myModalLabel " aria-hidden="true">
+                                    <div class="modal-dialog modal-lg ">
+                                        <div class="modal-body "style="background-color: #2f3542;">
+                                            <div class="modal-content" style="background-color: #2f3542;">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title " id="myModalLabel"> <span> Ajout d'un
+                                                            nouveau etape au dossier</span>
+                                                    </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="Post", action="{{ route('etape dossier.store') }}">
+                                                        @csrf
+                                                        <div class="row mb-3">
+                                                            <label for="nom"
+                                                                class="col-sm-2 col-form-label">etape</label>
+
+                                                            <select class="form-select" name="etapes_id"
+                                                                aria-label="Default select example">
+                                                                <option selected>choisissez l'etape correspondant
+                                                                </option>
+                                                                @foreach ($etapes as $etape)
+                                                                    <option value="{{ $etape->id }}">
+                                                                        {{ $etape->libelle }}</option>
+                                                                @endforeach
+                                                                {{-- @foreach ($etapes as $etape)
+                                                                            @foreach ($etape_dossiers as $etape_dossier)
+                                                                                @if ($dossier->id === $etape_dossier->dossier_id and $etape_dossier->etapes_id != $etape->id)
+                                                                                    <option value="{{ $etape->id }}">
+                                                                                        {{ $etape->libelle }}</option>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        @endforeach --}}
+
+
+                                                                {{-- @foreach ($etapes as $etape)
+                                                                            @if ($etape->niveau > $niveau)
+                                                                                <option value="{{ $etape->id }}">
+                                                                                    {{ $etape->libelle }}</option>
+                                                                            @endif
+                                                                        @break
+                                                                    @endforeach --}}
+
+                                                            </select>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <label for="nom"
+                                                                class="col-sm-2 col-form-label">Dossier</label>
+
+                                                            <select class="form-select" name="dossier_id"
+                                                                aria-label="Default select example">
+                                                                @foreach ($dossiers as $dossier)
+                                                                    <option value="{{ $dossier->id }}">
+                                                                        {{ $dossier->id }}
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <label for="surnom"
+                                                                class="col-sm-2 col-form-label">fini</label>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="statut" id="inlineRadio1" value="1">
+                                                                <label class="form-check-label"
+                                                                    for="inlineRadio1">oui</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="statut" id="inlineRadio2" value="2">
+                                                                <label class="form-check-label"
+                                                                    for="inlineRadio2">non</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <label for="surnom" class="col-sm-2 col-form-label">date
+                                                                de realisation</label>
+                                                            <div class="col-sm-10">
+                                                                <input type="datetime-local" name="date_realisation"
+                                                                    id="dates">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row modal-footer">
+                                                            <button type="submit"
+                                                                class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                                    class="icon-save1"></i>Enregistrer</button>
+                                                            <button type="button"
+                                                                class="col-auto button button-3d button-rounded button-red"
+                                                                data-dismiss="modal"><i
+                                                                    class="icon-backspace"></i>fermer</button>
+                                                        </div>
+
+
+
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                        <form method="Post", action="{{ route('etape dossier.store') }}">
-                                            @csrf
-                                            <div class="row mb-3">
-                                                <label for="nom"
-                                                    class="col-sm-2 col-form-label">etape</label>
 
-                                                <select class="form-select" name="etapes_id"
-                                                    aria-label="Default select example">
-                                                    <option selected>choisissez l'etape correspondant
-                                                    </option>
-                                                    @foreach ($etapes as $etape)
-                                                        <option value="{{ $etape->id }}">
-                                                            {{ $etape->libelle }}</option>
-                                                    @endforeach
-                                                    {{-- @foreach ($etapes as $etape)
-                                                                 @foreach ($etape_dossiers as $etape_dossier)
-                                                                     @if ($dossier->id === $etape_dossier->dossier_id and $etape_dossier->etapes_id != $etape->id)
-                                                                         <option value="{{ $etape->id }}">
-                                                                             {{ $etape->libelle }}</option>
-                                                                     @endif
-                                                                 @endforeach
-                                                             @endforeach --}}
+                                </div>
+
+                                {{-- Ajouter un nouveau parcelle --}}
+                                <div class="modal fadeInDown dark fast undefined animated" id="myModal5"
+                                    tabindex="-1" role="dialog" aria-labelledby="myModalLabel "
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg ">
+                                        <div class="modal-body "style="background-color: #2f3542;">
+                                            <div class="modal-content" style="background-color: #2f3542;">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title " id="myModalLabel"> <span> Ajoute d'un
+                                                            parcelle </span>
+                                                    </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+
+                                                    <form method="Post", action="{{ route('parcelle.store') }}">
+                                                        @csrf
 
 
-                                                    {{-- @foreach ($etapes as $etape)
-                                                                 @if ($etape->niveau > $niveau)
-                                                                     <option value="{{ $etape->id }}">
-                                                                         {{ $etape->libelle }}</option>
-                                                                 @endif
-                                                             @break
-                                                         @endforeach --}}
+
+                                                        <fieldset>
+                                                            <legend> </legend>
+
+                                                            {{-- <div class="row mb-3">
+                                                                    <label for="dossier"
+                                                                        class="col-sm-2 col-form-label">dossier</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control"
+                                                                            name="dossier_id" value=" {{ $dossier->id }} "
+                                                                            placeholder=" {{ $dossier->type_bornage_id }}.{{ $dossier->personne_morale_id }}.{{ $dossier->id }} ">
+                                                                    </div>
+                                                                </div> --}}
+                                                            <div class="row mb-3">
+                                                                <label for="nom"
+                                                                    class="col-sm-2 col-form-label">le
+                                                                    propriétaire
+                                                                    de la parcelle</label>
+
+                                                                <select class="form-select" name="dossier_id"
+                                                                    aria-label="Default select example">
+                                                                    <option selected>choisissez le proprietaire
+                                                                    </option>
+
+                                                                    @foreach ($personne_physiques as $personne_physique)
+                                                                        <option value="{{ $personne_physique->id }}">
+                                                                            {{ $personne_physique->nom }}
+                                                                            {{ $personne_physique->prenom }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                    @foreach ($personne_morales as $personne_morale)
+                                                                        <option value="{{ $personne_morale->id }}">
+                                                                            {{ $personne_morale->numero_recipicer }}:
+                                                                            {{ $personne_morale->email }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+
+
+                                                            <div class="row mb-3">
+                                                                <label for="lot"
+                                                                    class="col-sm-2 col-form-label">lot</label>
+                                                                <div class="col-sm-10">
+                                                                    <input type="text" class="form-control"
+                                                                        name="lot"
+                                                                        placeholder="entrer lot, exemple: Abdl-Aziz">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="chemin"
+                                                                    class="col-sm-2 col-form-label">le
+                                                                    dossier</label>
+                                                                <div class="col-sm-10">
+                                                                    <input type="text" class="form-control"
+                                                                        name="dossier_id"
+                                                                        value=" {{ $dossier->id }} ">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-3">
+                                                                <label for="section"
+                                                                    class="col-sm-2 col-form-label">section</label>
+                                                                <input type="text" name="section" id="section">
+                                                            </div>
+
+                                                            <div class="row mb-3">
+                                                                <label for="lot"
+                                                                    class="col-sm-2 col-form-label">superficie</label>
+                                                                <div class="col-sm-10">
+                                                                    <input type="text" name="superficie"
+                                                                        id="superficie">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row modal-footer">
+                                                                <button type="submit"
+                                                                    class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                                        class="icon-save1"></i>Enregistrer</button>
+                                                                <button type="button"
+                                                                    class="col-auto button button-3d button-rounded button-red"
+                                                                    data-dismiss="modal"><i
+                                                                        class="icon-backspace"></i>fermer</button>
+                                                            </div>
+
+                                                        </fieldset>
+
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- annuler un dossier --}}
+                                <div class="modal fade" id="myModal7" tabindex="-1" role="dialog"
+                                    aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-body ">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-center" id="myModalLabel">Annulation
+                                                        d'un dossier </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+
+                                                    {{-- <select class="form-select" name="dossier_id"
+                                                            aria-label="Default select example">
+                                                            @foreach ($dossiers as $dossier)
+                                                            <option value="{{ $dossier->id }}" >
+                                                                {{ $dossier->personne_physiques }}
+                                                            @endforeach
+                                                            </select> --}}
+
+                                                    <div class="text-center"> Annulation du dossier
+                                                        {{ $dossier->id }}
+                                                    </div>
+
+
+                                                    <div class="row modal-footer">
+                                                        <a
+                                                            href="{{ route('Annuler', $dossier->id) }}"class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                                class="icon-save1"></i>Oui</a>
+
+                                                        <button type="button"
+                                                            class="col-auto button button-3d button-rounded button-red"
+                                                            data-dismiss="modal"><i
+                                                                class="icon-backspace"></i>fermer</button>
+                                                    </div>
+
+
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- ajout de fichier --}}
+                                <div class="modal fade" id="myModal9" tabindex="-1" role="dialog"
+                                    aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-body ">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-center" id="myModalLabel">Ajouter un
+                                                        fichier au dossier </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+
+                                                    <form method="Post", action="{{ route('fichier.store') }}" enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="row mb-3" hidden>
+                                                            <label for="chemin" class="col-sm-2 col-form-label">le
+                                                                dossier</label>
+                                                            <div class="col-sm-10">
+                                                                <input type="text" class="form-control"
+                                                                    name="dossier_id" value=" {{ $dossier->id }} ">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <input type="file" name="nom" 
+                                                                class="form-control-file"
+                                                                >
+                                                        </div>
+
+                                                        <div class="row modal-footer">
+                                                            <button type="submit"
+                                                                class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                                    class="icon-save1"></i>Enregistrer</button>
+                                                            <button type="button"
+                                                                class="col-auto button button-3d button-rounded button-red"
+                                                                data-dismiss="modal"><i
+                                                                    class="icon-backspace"></i>fermer</button>
+                                                        </div>
+
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- suspendre un dossier --}}
+                                <div class="modal fade" id="myModal8" tabindex="-1" role="dialog"
+                                    aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-body ">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-center" id="myModalLabel">Suspendre un
+                                                        dossier </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+
+
+                                                    <div class="text-center"> suspendre le dossier
+                                                        {{ $dossier->id }}
+                                                    </div>
+
+
+                                                    <div class="row modal-footer">
+                                                        <a
+                                                            href="{{ route('Suspendu', $dossier->id) }}"class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                                class="icon-save1"></i>Oui</a>
+
+                                                        <button type="button"
+                                                            class="col-auto button button-3d button-rounded button-red"
+                                                            data-dismiss="modal"><i
+                                                                class="icon-backspace"></i>Non</button>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- Annuler la suspension du dossier --}}
+                                <div class="modal fade" id="myModal11" tabindex="-1" role="dialog"
+                                    aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-body ">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-center" id="myModalLabel">Suspendre un
+                                                        dossier </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+
+
+
+                                                    <div class="text-center"> Annuler la suspension du dossier
+                                                        {{ $dossier->id }}
+                                                    </div>
+
+                                                    <div class="row modal-footer">
+                                                        <a
+                                                            href="{{ route('annul_suspension', $dossier->id) }}"class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                                class="icon-save1"></i>Oui</a>
+
+                                                        <button type="button"
+                                                            class="col-auto button button-3d button-rounded button-red"
+                                                            data-dismiss="modal"><i
+                                                                class="icon-backspace"></i>Non</button>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- enregistrer une observation --}}
+                                <div class="modal zoomIn faster mx-auto
+                                                undefined animated"
+                                    id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-body ">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-center" id="myModalLabel">Enregistrer
+                                                        un nouveau dossier </h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="Post", action="{{ route('observation.store') }}">
+                                                        @csrf
+                                                        {{-- <div class="row mb-3">
+                                                <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
+
+                                                <select class="form-select" name="dossier_id" aria-label="Default select example">
+
+
+
+                                                    <option value="{{ $dossier->id }}">{{ $dossier->libelle }}</option>
 
                                                 </select>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <label for="nom"
-                                                    class="col-sm-2 col-form-label">Dossier</label>
+                                            </div> --}}
+                                                        {{-- <div class="row mb-3">
+                                                <label for="nom" class="col-sm-2 col-form-label">Personnel</label>
 
-                                                <select class="form-select" name="dossier_id"
-                                                    aria-label="Default select example">
-                                                    @foreach ($dossiers as $dossier)
-                                                        <option value="{{ $dossier->id }}">
-                                                            {{ $dossier->id }}
+                                                <select class="form-select" name="personnel_id" aria-label="Default select example">
+                                                    <option selected>choisissez le personnel correspondant</option>
+
+                                                    @foreach ($personnels as $personnel)
+                                                        <option value="{{ $personnel->id }}">{{ $personnel->matricule }}</option>
                                                     @endforeach
                                                 </select>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <label for="surnom"
-                                                    class="col-sm-2 col-form-label">fini</label>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="statut" id="inlineRadio1" value="1">
-                                                    <label class="form-check-label"
-                                                        for="inlineRadio1">oui</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio"
-                                                        name="statut" id="inlineRadio2" value="2">
-                                                    <label class="form-check-label"
-                                                        for="inlineRadio2">non</label>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <label for="surnom" class="col-sm-2 col-form-label">date
-                                                    de realisation</label>
+                                            </div> --}}
+                                                        <div class="row mb-3">
+                                                            <div class="row mb-3" hidden>
+                                                                <label for="contenu"
+                                                                    class="col-sm-2 col-form-label">le
+                                                                    dossier</label>
+                                                                <input type="text" name="dossier_id"
+                                                                    value=" {{ $dossier->id }} " id="">
+                                                            </div>
+
+                                                            <div class="row mb-3">
+
+                                                                <textarea class="form-control" placeholder="ajouter une observation" name="contenu" id="contenu"
+                                                                    style="height: 100px"></textarea>
+                                                            </div>
+
+
+                                                            {{-- <div class="row mb-3">
+                                                <label for="surnom" class="col-sm-2 col-form-label">date d'observation'</label>
                                                 <div class="col-sm-10">
-                                                    <input type="datetime-local" name="date_realisation"
-                                                        id="dates">
+                                                    <input type="datetime-local" name="date_observation" id="dates">
+                                                </div>
+                                            </div> --}}
+                                                            <div class="row modal-footer">
+                                                                <button type="submit"
+                                                                    class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                                        class="icon-save1"></i> Enregistrer </button>
+                                                                <button type="button"
+                                                                    class="col-auto button button-3d button-rounded button-red"
+                                                                    data-dismiss="modal"><i
+                                                                        class="icon-backspace"></i>fermer</button>
+                                                            </div>
+                                                    </form>
                                                 </div>
                                             </div>
-                                            <div class="row modal-footer">
-                                                <button type="submit"
-                                                    class="col-auto me-auto button button-3d button-rounded button-green"><i
-                                                        class="icon-save1"></i>Enregistrer</button>
-                                                <button type="button"
-                                                    class="col-auto button button-3d button-rounded button-red"
-                                                    data-dismiss="modal"><i
-                                                        class="icon-backspace"></i>fermer</button>
-                                            </div>
-
-
-
-                                        </form>
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {{-- Ajouter un nouveau parcelle --}}
-                    <div class="modal fadeInDown dark fast undefined animated" id="myModal5"
-                        tabindex="-1" role="dialog" aria-labelledby="myModalLabel "
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-lg ">
-                            <div class="modal-body "style="background-color: #2f3542;">
-                                <div class="modal-content" style="background-color: #2f3542;">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title " id="myModalLabel"> <span> Ajoute d'un
-                                                parcelle </span>
-                                        </h4>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-
-                                        <form method="Post", action="{{ route('parcelle.store') }}">
-                                            @csrf
-
-
-
-                                            <fieldset>
-                                                <legend> </legend>
-
-                                                {{-- <div class="row mb-3">
-                                                         <label for="dossier"
-                                                             class="col-sm-2 col-form-label">dossier</label>
-                                                         <div class="col-sm-10">
-                                                             <input type="text" class="form-control"
-                                                                 name="dossier_id" value=" {{ $dossier->id }} "
-                                                                 placeholder=" {{ $dossier->type_bornage_id }}.{{ $dossier->personne_morale_id }}.{{ $dossier->id }} ">
-                                                         </div>
-                                                     </div> --}}
-                                                <div class="row mb-3">
-                                                    <label for="nom"
-                                                        class="col-sm-2 col-form-label">le
-                                                        propriétaire
-                                                        de la parcelle</label>
-
-                                                    <select class="form-select" name="dossier_id"
-                                                        aria-label="Default select example">
-                                                        <option selected>choisissez le proprietaire
-                                                        </option>
-
-                                                        @foreach ($personne_physiques as $personne_physique)
-                                                            <option value="{{ $personne_physique->id }}">
-                                                                {{ $personne_physique->nom }}
-                                                                {{ $personne_physique->prenom }}
-                                                            </option>
-                                                        @endforeach
-                                                        @foreach ($personne_morales as $personne_morale)
-                                                            <option value="{{ $personne_morale->id }}">
-                                                                {{ $personne_morale->numero_recipicer }}:
-                                                                {{ $personne_morale->email }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-
-
-                                                <div class="row mb-3">
-                                                    <label for="lot"
-                                                        class="col-sm-2 col-form-label">lot</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control"
-                                                            name="lot"
-                                                            placeholder="entrer lot, exemple: Abdl-Aziz">
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <label for="chemin"
-                                                        class="col-sm-2 col-form-label">le
-                                                        dossier</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control"
-                                                            name="dossier_id"
-                                                            value=" {{ $dossier->id }} ">
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <label for="section"
-                                                        class="col-sm-2 col-form-label">section</label>
-                                                    <input type="text" name="section" id="section">
-                                                </div>
-
-                                                <div class="row mb-3">
-                                                    <label for="lot"
-                                                        class="col-sm-2 col-form-label">superficie</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" name="superficie"
-                                                            id="superficie">
-                                                    </div>
-                                                </div>
-                                                <div class="row modal-footer">
-                                                    <button type="submit"
-                                                        class="col-auto me-auto button button-3d button-rounded button-green"><i
-                                                            class="icon-save1"></i>Enregistrer</button>
-                                                    <button type="button"
-                                                        class="col-auto button button-3d button-rounded button-red"
-                                                        data-dismiss="modal"><i
-                                                            class="icon-backspace"></i>fermer</button>
-                                                </div>
-
-                                            </fieldset>
-
-                                        </form>
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- annuler un dossier --}}
-                    <div class="modal fade" id="myModal7" tabindex="-1" role="dialog"
-                        aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-body ">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title text-center" id="myModalLabel">Annulation
-                                            d'un dossier </h4>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-
-                                        {{-- <select class="form-select" name="dossier_id"
-                                                 aria-label="Default select example">
-                                                 @foreach ($dossiers as $dossier)
-                                                 <option value="{{ $dossier->id }}" >
-                                                     {{ $dossier->personne_physiques }}
-                                                 @endforeach
-                                                 </select> --}}
-
-                                        <div class="text-center"> Annulation du dossier
-                                            {{ $dossier->id }}
                                         </div>
-
-
-                                        <div class="row modal-footer">
-                                            <a
-                                                href="{{ route('Annuler', $dossier->id) }}"class="col-auto me-auto button button-3d button-rounded button-green"><i
-                                                    class="icon-save1"></i>Oui</a>
-
-                                            <button type="button"
-                                                class="col-auto button button-3d button-rounded button-red"
-                                                data-dismiss="modal"><i
-                                                    class="icon-backspace"></i>fermer</button>
-                                        </div>
-
-
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ajout de fichier --}}
-                    <div class="modal fade" id="myModal9" tabindex="-1" role="dialog"
-                        aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-body ">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title text-center" id="myModalLabel">Ajouter un
-                                            fichier au dossier </h4>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-
-                                        <form method="Post", action="{{ route('fichier.store') }}" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="row mb-3" hidden>
-                                                <label for="chemin" class="col-sm-2 col-form-label">le
-                                                    dossier</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control"
-                                                        name="dossier_id" value=" {{ $dossier->id }} ">
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <input type="file" name="nom" multiple="false"
-                                                    class="form-control-file"
-                                                    >
-                                            </div>
-
-                                            <div class="row modal-footer">
-                                                <button type="submit"
-                                                    class="col-auto me-auto button button-3d button-rounded button-green"><i
-                                                        class="icon-save1"></i>Enregistrer</button>
-                                                <button type="button"
-                                                    class="col-auto button button-3d button-rounded button-red"
-                                                    data-dismiss="modal"><i
-                                                        class="icon-backspace"></i>fermer</button>
-                                            </div>
-
-                                        </form>
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- suspendre un dossier --}}
-                    <div class="modal fade" id="myModal8" tabindex="-1" role="dialog"
-                        aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-body ">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title text-center" id="myModalLabel">Suspendre un
-                                            dossier </h4>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-
-
-                                        <div class="text-center"> suspendre le dossier
-                                            {{ $dossier->id }}
-                                        </div>
-
-
-                                        <div class="row modal-footer">
-                                            <a
-                                                href="{{ route('Suspendu', $dossier->id) }}"class="col-auto me-auto button button-3d button-rounded button-green"><i
-                                                    class="icon-save1"></i>Oui</a>
-
-                                            <button type="button"
-                                                class="col-auto button button-3d button-rounded button-red"
-                                                data-dismiss="modal"><i
-                                                    class="icon-backspace"></i>Non</button>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- Annuler la suspension du dossier --}}
-                    <div class="modal fade" id="myModal11" tabindex="-1" role="dialog"
-                        aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-body ">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title text-center" id="myModalLabel">Suspendre un
-                                            dossier </h4>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-
-
-
-                                        <div class="text-center"> Annuler la suspension du dossier
-                                            {{ $dossier->id }}
-                                        </div>
-
-                                        <div class="row modal-footer">
-                                            <a
-                                                href="{{ route('annul_suspension', $dossier->id) }}"class="col-auto me-auto button button-3d button-rounded button-green"><i
-                                                    class="icon-save1"></i>Oui</a>
-
-                                            <button type="button"
-                                                class="col-auto button button-3d button-rounded button-red"
-                                                data-dismiss="modal"><i
-                                                    class="icon-backspace"></i>Non</button>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- enregistrer une observation --}}
-                    <div class="modal zoomIn faster mx-auto
-                                     undefined animated"
-                        id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-body ">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title text-center" id="myModalLabel">Enregistrer
-                                            un nouveau dossier </h4>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form method="Post", action="{{ route('observation.store') }}">
-                                            @csrf
-                                            {{-- <div class="row mb-3">
-                                     <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
-
-                                     <select class="form-select" name="dossier_id" aria-label="Default select example">
-
-
-
-                                         <option value="{{ $dossier->id }}">{{ $dossier->libelle }}</option>
-
-                                     </select>
-                                 </div> --}}
-                                            {{-- <div class="row mb-3">
-                                     <label for="nom" class="col-sm-2 col-form-label">Personnel</label>
-
-                                     <select class="form-select" name="personnel_id" aria-label="Default select example">
-                                         <option selected>choisissez le personnel correspondant</option>
-
-                                         @foreach ($personnels as $personnel)
-                                             <option value="{{ $personnel->id }}">{{ $personnel->matricule }}</option>
-                                         @endforeach
-                                     </select>
-                                 </div> --}}
-                                            <div class="row mb-3">
-                                                <div class="row mb-3" hidden>
-                                                    <label for="contenu"
-                                                        class="col-sm-2 col-form-label">le
-                                                        dossier</label>
-                                                    <input type="text" name="dossier_id"
-                                                        value=" {{ $dossier->id }} " id="">
-                                                </div>
-
-                                                <div class="row mb-3">
-
-                                                    <textarea class="form-control" placeholder="ajouter une observation" name="contenu" id="contenu"
-                                                        style="height: 100px"></textarea>
-                                                </div>
-
-
-                                                {{-- <div class="row mb-3">
-                                     <label for="surnom" class="col-sm-2 col-form-label">date d'observation'</label>
-                                     <div class="col-sm-10">
-                                         <input type="datetime-local" name="date_observation" id="dates">
-                                     </div>
-                                 </div> --}}
-                                                <div class="row modal-footer">
-                                                    <button type="submit"
-                                                        class="col-auto me-auto button button-3d button-rounded button-green"><i
-                                                            class="icon-save1"></i> Enregistrer </button>
-                                                    <button type="button"
-                                                        class="col-auto button button-3d button-rounded button-red"
-                                                        data-dismiss="modal"><i
-                                                            class="icon-backspace"></i>fermer</button>
-                                                </div>
-                                        </form>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
+                                </td>
 
 
 
-                <td>
-                    <a class="dropdown-item" href="{{ route('dossier.show', $dossier) }}">detail</a>
-                </td>
+                                <td>
+                                    <a class="dropdown-item" href="{{ route('dossier.show', $dossier) }}">detail</a>
+                                </td>
 
-            </tr>
-        @endforeach
+                            </tr>
+                        @endforeach
     </tbody>
 </table>
 
@@ -953,15 +984,10 @@ aria-hidden="true">
                         <span class="step-number">Step 3 / 4</span>
                     </legend>
                     <label for="file" class="col-md-4 col-form-label text-md-right"></label>
-                    <div class="col-md-6">
-                        <input id="file" type="file"
-                            class="form-control @error('file') is-invalid @enderror" name="file"
-                            value="{{ old('file') }}">
-                        @error('file')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
+                    <div class="form-group">
+                        <input type="file" name="nom" 
+                            class="form-control-file"
+                            >
                     </div>
                     {{-- <div class="form-group">
                                         <label for="exampleFormControlFile1"></label>
@@ -1063,7 +1089,64 @@ aria-hidden="true">
 </div>
 </div>
 
+{{-- Affectation de dossier a un technicien --}}
+<div class="modal fade" id="myModal12" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+            <div class="modal-body ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-center" id="myModalLabel">Affectation d'un dossier a un technicien </h4>
+                        <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
 
+                        <form method="Post", action="{{ route('affectation.store') }}">
+                            @csrf
+
+
+                            <div class="row mb-3">
+                                <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
+
+                                <select class="form-select" name="dossier_id" aria-label="Default select example">
+
+                                    @foreach ($dossiers as $dossier)
+                                    <option value="{{ $dossier->id }}">{{ $dossier->id }}</option>
+                                    @endforeach
+
+                                </select>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
+
+                                <select class="form-select" name="personnel_id" aria-label="Default select example">
+
+                                    @foreach ($personne_physiques as $personne_physique)
+                                    <option value="{{ $personne_physique->id }}">{{ $personne_physique->nom }} {{ $personne_physique->prenom }}</option>
+                                    @endforeach
+
+                                </select>
+                            </div>
+
+
+                            <div class="row modal-footer">
+                                <button type="submit"
+                                    class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                        class="icon-save1"></i>Enregistrer</button>
+                                <button type="button" class="col-auto button button-3d button-rounded button-red"
+                                    data-dismiss="modal"><i class="icon-backspace"></i>fermer</button>
+                            </div>
+
+
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+    </div>
+</div>
 
 {{-- enregistrer un commentaire --}}
 <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

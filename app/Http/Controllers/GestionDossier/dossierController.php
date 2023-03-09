@@ -19,6 +19,7 @@ use App\Models\typebornage;
 use App\Models\Utilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Expr\Isset_;
 
 /* la fonction permettant de voir la liste des dossiers sur l'acceuil */
@@ -146,17 +147,21 @@ $verif_idperson = $request-> get('personne_physique_id');
 
 
         /* enregistrement de fichier */
-        $verif_fichier = $request->get('file');
-        if(isset($verif_fichier))
+        $nom = $_FILES["nom"]["name"];
+        $verif_fichier = $request->get('nom');
+        if(isset($nom))
        {
-        $fichiers = new fichier([
-
+       
+        $path = $request->file('nom')->storeas('public', "$nom");
+        $fichiers = Storage::url($path);
+            $fichiers = new fichier([
             'parcelle_id'=> $request->get('parcelle_id'),
-            'dossier_id' => $id,
-            'nom' => $request->get('file'),
-            //'fichier' => $request->get('fichier'),
+            'dossier_id'=>$id,
+            'nom'=>$nom,
+            'fichier' => $fichiers,
         ]);
         $fichiers->save();
+        
         /* $path = $request->file('file')->store('file');
 
         dd($path); */
@@ -270,18 +275,31 @@ $verif_idperson = $request-> get('personne_physique_id');
         $etat_dossiers  = DB::table('etat_dossiers')->latest()->get();
         $personnels = Personnel::all();
         $dossiers = Dossier::all();
+        $affectations = DB::table('affectation')
+                    ->join('dossiers', 'dossiers.id', '=', 'affectation.dossier_id')
+                    ->join('personne_physiques','personne_physiques.id','=','affectation.personne_physique_id')
+                    ->select('affectation.dossier_id','affectation.personne_physique_id','affectation.date_affection','dossiers.*', 'personne_physiques.nom','personne_physiques.prenom')
+                    //->orderByDesc('dossiers.id')
+                    ->get();
+                    //dd($affectations);
         //$etape_dossiers = Etape_dossier::all();
         $sorties = Sortie::all();
         $personne_physiques = Personne_physique::all();
         $personne_morales = Personne_morale::all();
         $utilisateurs = Utilisateur::all();
-        $etapeDossiers= DB::table('etapes')->join('etape_dossiers', 'etapes.id','=','etape_dossiers.etapes_id')->select('etapes.*','etape_dossiers.*');
+        $etapeDossiers= DB::table('etapes')->join('etape_dossiers', 'etapes.id','=','etape_dossiers.etapes_id')
+                    ->select('etapes.niveau' ,'etape_dossiers.dossier_id','etape_dossiers.date_realisation')
+                    //->distinct('etape_dossiers.dossier_id')
+                    ->latest('etape_dossiers.date_realisation')
+                    ->get();
         //$etapeDossiers=Etape::all()->join('Etape_dossier', 'Etape.id','=','Etape_dossier.etapes_id');
         $etapes=Etape::all();
         $type_bornages = typebornage::all();
         $etape_dossiers = Etape_dossier::all() /* Etape_dossier::all()->last()->get() */;
         $etat_sorties=Etat_sorti::all();
-        return view('gestionDeDossier.dossier.index',['dossiers'=>$dossiers ,'etat_dossiers'=>$etat_dossiers,'type_bornages'=>$type_bornages, /* 'personnes'=>$personnes, */'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'personne_morales'=>$personne_morales, /* 'etat_sorties'=>$etat_sorties */ ]);
+//dd($etapeDossiers);
+
+        return view('gestionDeDossier.dossier.index',['dossiers'=>$dossiers, 'etapeDossiers'=>$etapeDossiers ,'affectations'=>$affectations ,'etat_dossiers'=>$etat_dossiers,'type_bornages'=>$type_bornages, /* 'personnes'=>$personnes, */'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'personne_morales'=>$personne_morales, /* 'etat_sorties'=>$etat_sorties */ ]);
 
     }
 
