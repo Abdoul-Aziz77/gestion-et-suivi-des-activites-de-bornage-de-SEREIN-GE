@@ -35,12 +35,23 @@ class dossierController extends Controller
 
      public function store(Request $request)
     {
+       /*  $fichp = $_FILES["fichierp"];
+        dd($fichp); */
+        $request->validate([
 
-        /* $request->validate([
+            'nom'=>'nullable|string',
+            'prenom'=>'nullable|string',
+            'email'=>'nullable|email|unique:personne_physiques,email',
+            'tel_personne'=>'nullable',
+            'typebornages_id'=>'nullable',
+            'contenu'=>'nullable',
+            'numparcelle'=>'nullable',
+            'lot'=>'nullable',
+            'section'=>'nullable',
+            'superficie'=>'nullable',
+            'proprietaire'=>'nullable',
+            //'fichier'=>'nullable|file|size:max:1024',
 
-            'situation'=>'required',
-            'type_bornage'=>'required',
-            'personne_physique_id'=>'required'
         ]);
         /* // */
         //
@@ -55,7 +66,7 @@ class dossierController extends Controller
 $verif_personne = $request-> get('nom');
         if(isset($verif_personne))
 {
-    $personne_physiques =$id = DB::table('personne_physiques')->insertGetId([
+    $personne_physiques = DB::table('personne_physiques')->insertGetId([
         'nom'=> $request-> get('nom'),
         'prenom' => $request->get('prenom'),
         'email' => $request->get('email'),
@@ -63,16 +74,16 @@ $verif_personne = $request-> get('nom');
 
         'adresse_id'=> $ad,
     ]);
-    $personne_physique_id = $personne_physiques;
+    $client = $personne_physiques;
 }
 
 /* Enregistrement de dossiers */
-$verif_idperson = $request-> get('personne_physique_id');
+$verif_idperson = $request-> get('client');
         if(isset($verif_idperson))
         {
             $id = DB::table('dossiers')->insertGetId([
                 'situation'=>$request->get('situation'),
-                'personne_physique_id'=>$personne_physique_id,
+                'personne_physique_id'=>$request-> get('client'),
                 'typebornages_id' =>$request->get('typebornages_id'),
                 'date_enregistrement'=> $dat,
             ]);
@@ -80,8 +91,9 @@ $verif_idperson = $request-> get('personne_physique_id');
         else{
             $id = DB::table('dossiers')->insertGetId([
                 'situation'=>$request->get('situation'),
-                'personne_physique_id'=>$request->get('personne_physique_id'),
+                'personne_physique_id'=>$client,
                 'typebornages_id' =>$request->get('typebornages_id'),
+                'date_enregistrement'=> $dat,
             ]);
         }
 
@@ -94,13 +106,11 @@ $verif_idperson = $request-> get('personne_physique_id');
         ]); */
 
         /* Enregistrement d'un parcelle du dossier */
-        $verif_parcelle = $request->get('superficie');
-        if(isset($verif_parcelle))
-        {
-            $parcelles = new Parcelle([
 
-                'personne_moral_id'=> 1,
-                'personne_physique_id' => $request->get('personne_physique_id'),
+            //$parcelles = new Parcelle([
+            $idd = DB::table('parcelles')->insertGetId([
+                //'personne_moral_id'=> $ad,
+                'personne_physique_id' => $request->get('proprietaireP'),
                 'dossier_id' => $id,
                 'lot' => $request->get('lot'),
                 'numparcelle'=>$request->get('numparcelle'),
@@ -108,8 +118,8 @@ $verif_idperson = $request-> get('personne_physique_id');
                 'superficie' => $request->get('superficie'),
 
             ]);
-            $parcelles->save();
-        }
+            //$parcelles->save();
+
 
 /* Enregistrement de commentaire */
         $verif_commentaire = $request-> get('contenu');
@@ -146,24 +156,50 @@ $verif_idperson = $request-> get('personne_physique_id');
 
 
 
-        /* enregistrement de fichier */
-        $nom = $_FILES["nom"]["name"];
-        $verif_fichier = $request->get('nom');
-        if(isset($nom))
-       {
-       
-        $path = $request->file('nom')->storeas('public', "$nom");
-        $fichiers = Storage::url($path);
-            $fichiers = new fichier([
-            'parcelle_id'=> $request->get('parcelle_id'),
-            'dossier_id'=>$id,
-            'nom'=>$nom,
-            'fichier' => $fichiers,
-        ]);
-        $fichiers->save();
-        
-        /* $path = $request->file('file')->store('file');
+        /* enregistrement de fichier sur le dossier */
 
+        $fich = $_FILES["fichierd"]['error'];
+        $nomd1 = $_FILES["fichierd"]["name"];
+        $nomd = str_replace(' ','_',$nomd1);
+        $nomdp = uniqid() ;
+        $nomdp = $nomdp.$nomd;
+        //$verif_fichier = $request->get('fichierd');
+        if($fich !== 4)
+       {
+
+            $path = $request->file('fichierd')->storeas('public', "$nomdp");
+            $fichiers = Storage::url($path);
+                $fichiers = new fichier([
+                //'parcelle_id'=> $request->get('parcelle_id'),
+                'dossier_id'=>$id,
+                'nom'=>$nomd1,
+                'fichier' => $fichiers,
+            ]);
+            $fichiers->save();
+        /* $path = $request->file('file')->store('file');
+        dd($path); */
+       }
+
+        /* enregistrement de fichier sur une parcelle */
+        $fichp = $_FILES["fichierp"]['error'];
+        $nomp1 = $_FILES["fichierp"]["name"];
+        $nomp = str_replace(' ','_',$nomp1);
+        $nompp = uniqid() ;
+        $nompp = $nompp.$nomp;
+        //$verif_fichier = $request->get('fichierp');
+        if($fichp !== 4)
+       {
+            $path = $request->file('fichierp')->storeas('public', "$nompp");
+            $fichiers = Storage::url($path);
+                $fichiers = new fichier([
+                'parcelle_id'=> $idd,
+                'dossier_id'=>$id,
+                'nom'=>$nomp1,
+                'fichier' => $fichiers,
+            ]);
+            $fichiers->save();
+            //dd($nom);
+        /* $path = $request->file('file')->store('file');
         dd($path); */
        }
 
@@ -261,17 +297,12 @@ $verif_idperson = $request-> get('personne_physique_id');
 
     public function index(Request $request)
     {
-        //
-       /*  $dossiers = DB::table('dossiers')
-                    ->join('personne_dossiers', 'dossiers.id','=','personne_dossiers.dossier_id')
-                    ->join('etape_dossiers', 'dossiers.id','=','etape_dossiers.dossier_id')
-                    ->join('sorties','dossiers.id','=','sorties.dossier_id')
-                    ->select('dossiers.*','etape_dossiers.*','sorties.*')
-                    ->get()
-                    ; */
 
-       // $personnes= DB::table('personne_physiques')->get();
-        //$etapes  = DB::table('etapes')->get();
+        $dossier = DB::table('dossiers')
+                    ->groupBy('id')
+                    ->having('personne_physique_id')
+                    ;
+                   // dd($dossier);
         $etat_dossiers  = DB::table('etat_dossiers')->latest()->get();
         $personnels = Personnel::all();
         $dossiers = Dossier::all();
@@ -279,27 +310,37 @@ $verif_idperson = $request-> get('personne_physique_id');
                     ->join('dossiers', 'dossiers.id', '=', 'affectation.dossier_id')
                     ->join('personne_physiques','personne_physiques.id','=','affectation.personne_physique_id')
                     ->select('affectation.dossier_id','affectation.personne_physique_id','affectation.date_affection','dossiers.*', 'personne_physiques.nom','personne_physiques.prenom')
-                    //->orderByDesc('dossiers.id')
+                    ->distinct('dossiers.id')
                     ->get();
-                    //dd($affectations);
-        //$etape_dossiers = Etape_dossier::all();
         $sorties = Sortie::all();
         $personne_physiques = Personne_physique::all();
         $personne_morales = Personne_morale::all();
         $utilisateurs = Utilisateur::all();
+        $dossier_etape = DB::table('etapes')
+                        ->join('etape_dossiers',function($join){
+                                $join->on('etapes.id','=','etape_dossiers.etapes_id')
+                                ->where('etapes.niveau','>',2)
+                                ;
+                        })
+                        ->distinct('dossier_id')
+                        ->get()
+                        ;
+
         $etapeDossiers= DB::table('etapes')->join('etape_dossiers', 'etapes.id','=','etape_dossiers.etapes_id')
                     ->select('etapes.niveau' ,'etape_dossiers.dossier_id','etape_dossiers.date_realisation')
-                    //->distinct('etape_dossiers.dossier_id')
-                    ->latest('etape_dossiers.date_realisation')
+                    ->distinct('etape_dossiers.dossier_id')
+                    ->where('etapes.niveau','>',1)
                     ->get();
-        //$etapeDossiers=Etape::all()->join('Etape_dossier', 'Etape.id','=','Etape_dossier.etapes_id');
+       /* Recherche du nombre de nouveau dossier
+        $dossier_nouveau = DB::table('etat_dossiers')->where('libelle','=','Nouveau')->count() ; //DB::table('dossiers')->joi('etat_dossiers','dossiers.id')
+        dd($dossier_nouveau); */
         $etapes=Etape::all();
         $type_bornages = typebornage::all();
-        $etape_dossiers = Etape_dossier::all() /* Etape_dossier::all()->last()->get() */;
+        $etape_dossiers = Etape_dossier::all();
         $etat_sorties=Etat_sorti::all();
-//dd($etapeDossiers);
 
-        return view('gestionDeDossier.dossier.index',['dossiers'=>$dossiers, 'etapeDossiers'=>$etapeDossiers ,'affectations'=>$affectations ,'etat_dossiers'=>$etat_dossiers,'type_bornages'=>$type_bornages, /* 'personnes'=>$personnes, */'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'personne_morales'=>$personne_morales, /* 'etat_sorties'=>$etat_sorties */ ]);
+
+        return view('gestionDeDossier.dossier.index',['dossiers'=>$dossiers, 'dossier_etapes'=>$dossier_etape ,'etapeDossiers'=>$etapeDossiers ,'affectations'=>$affectations ,'etat_dossiers'=>$etat_dossiers,'type_bornages'=>$type_bornages, /* 'personnes'=>$personnes, */'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'personne_morales'=>$personne_morales, /* 'etat_sorties'=>$etat_sorties */ ]);
 
     }
 

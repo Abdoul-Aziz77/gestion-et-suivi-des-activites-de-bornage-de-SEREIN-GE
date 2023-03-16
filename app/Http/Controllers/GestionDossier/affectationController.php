@@ -50,6 +50,13 @@ class affectationController extends Controller
                     ->where('id', '=', $etape_id)
                     ->value('niveau');
 
+                    
+    $af = DB::table('etat_dossiers')
+            ->where('dossier_id', '=', $request->get('dossier_id'))
+            ->update([
+                'libelle' => 'En Cours',
+                'description' => 'un dossier qui est toujours ce les technicien',
+            ]);
         /* $etaD_id = DB::table('etape_dossiers')
                     ->where('dossier_id', '=', $dossier_id)
                     ->value('id'); */

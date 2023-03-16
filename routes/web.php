@@ -99,6 +99,8 @@ Route::resource('adresse', adresseController::class);
 Route::resource('personne morale', personneMoraleController::class);
 
 Route::resource('personne physique', personnePhysiqueController::class);
+Route::post('personne physique', [personnePhysiqueController::class, 'nouveauPersonnePhysique']) ->name('nouveauPersonnePhysique');
+
 
 Route::resource('personnel', personnelController::class);
 

@@ -51,12 +51,29 @@ class etapeDossierController extends Controller
         ]);
 
         // request
-        $etape =  $request->get('etapes_id');
+        $dossier_id = $request->get('dossier_id');
+
+        /* $etape =  $request->get('etapes_id');
         $niv = DB::table('etapes')
-            ->where('id', '=', $etape)->value('niveau');
+            ->where('id', '=', $etape)->value('niveau'); */
+
+            $etape_id = DB::table('etape_dossiers')->latest()
+            ->where('dossier_id', '=', $dossier_id)->value('etapes_id');
+
+            $niveau = DB::table('etapes')
+                        ->where('id', '=', $etape_id)
+                        ->value('niveau');
         // la request
-if($niv>2)
+if($niveau > 2)
 {
+
+    $etape_dossiers = new Etape_dossier([
+        'etapes_id' => $request->get('etapes_id'),
+        'dossier_id' => $request->get('dossier_id'),
+        'statut' => $request->get('statut'),
+        'date_realisation' => $request->get('date_realisation'),
+    ]);
+    $etape_dossiers->save();
     $af = DB::table('etat_dossiers')
             ->where('dossier_id', '=', $request->get('dossier_id'))
             ->update([
@@ -64,20 +81,14 @@ if($niv>2)
                 'description' => 'un dossier qui est toujours ce les technicien',
             ]);
 }
-else{
-    DB::table('etat_dossiers')->insert([
-        'dossier_id'=>$request->get('dossier_id'),
+/* else{
+    $af = DB::table('etat_dossiers')
+    ->where('dossier_id', '=', $request->get('dossier_id'))
+    ->update([
         'libelle' => 'Nouveau',
         'description' => "un dossier qui n'a pas encore depasse d'etape d'affectation ",
     ]);
-}
-        $etape_dossiers = new Etape_dossier([
-            'etapes_id' => $request->get('etapes_id'),
-            'dossier_id' => $request->get('dossier_id'),
-            'statut' => $request->get('statut'),
-            'date_realisation' => $request->get('date_realisation'),
-        ]);
-        $etape_dossiers->save();
+} */
         $retour = url()->previous();
 
         return redirect("$retour")->with('success', "l'etape est enregistrer avec succès");
@@ -179,7 +190,7 @@ else{
             ->update([
                 'statut' => 1
             ]);
-            
+
             $etape = DB::table('etape_dossiers')
             ->where('id', '=', $etape_dossiers)->value('etapes_id');
             $niv = DB::table('etapes')

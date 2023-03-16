@@ -39,6 +39,23 @@ class personnePhysiqueController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function nouveauPersonePhysique(Request $request)
+    {
+        $personne_physiques = new Personne_physique([
+            'nom'=> $request-> get('nom'),
+            'prenom' => $request->get('prenom'),
+            'email' => $request->get('email'),
+            'tel_personne' => $request->get('tel_personne'),
+            //'date_naissance' => $request->get('date_naissance'),
+            //'adresse_id'=> $id,
+        ]);
+
+        $personne_physiques->save();
+
+        $person = DB::table('persnne_physiques')->latest();
+        $retour = url()->previous();
+       redirect ("$retour",['persons'=>$person,]);
+    }
     public function store(Request $request)
     {
         // //

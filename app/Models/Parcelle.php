@@ -9,9 +9,10 @@ class Parcelle extends Model
 {
     use HasFactory;
     protected $fillable = [
-        "#personne_moral_id",
+        "personne_moral_id",
         "personne_physique_id",
-        "#dossier_id",
+        "dossier_id",
+        'numparcelle',
         "lot",
         "section",
         "superficie",
