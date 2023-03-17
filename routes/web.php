@@ -12,6 +12,7 @@ use App\Http\Controllers\GestionDesUtilisateurs\personnePhysiqueController;
 use App\Http\Controllers\GestionDesUtilisateurs\posteController;
 use App\Http\Controllers\GestionDesUtilisateurs\profilController;
 use App\Http\Controllers\GestionDesUtilisateurs\utilisateurController;
+use App\Http\Controllers\GestionDossier\affectationController;
 use App\Http\Controllers\GestionDossier\commentaireDossierController;
 use App\Http\Controllers\GestionDossier\commentaireFichierController;
 use App\Http\Controllers\GestionDossier\dossierController;
@@ -89,11 +90,17 @@ Route::resource('parcelle', parcelleController::class);
 
 Route::resource('poste', posteController::class);
 
+Route::resource('affectation', affectationController::class);
+//Route::post('/nouveau/dossier', [affectationController::class, 'reaffectation'])->name('reaffectation');
+
+
 Route::resource('adresse', adresseController::class);
 
 Route::resource('personne morale', personneMoraleController::class);
 
 Route::resource('personne physique', personnePhysiqueController::class);
+Route::post('personne physique', [personnePhysiqueController::class, 'nouveauPersonnePhysique']) ->name('nouveauPersonnePhysique');
+
 
 Route::resource('personnel', personnelController::class);
 
@@ -104,7 +111,7 @@ Route::resource('dossier', dossierController::class);
 Route::get('/dossiers', [dossierController::class, 'dossierAcceuil'])->name('dossier');
 
 
- Route::post('/nouveau/dossier', [dossierController::class, 'store'])->name('nouveau');
+ //Route::post('/nouveau/dossier', [dossierController::class, 'store'])->name('nouveau');
 Route::get('/dossierFinaliser', [dossierController::class, 'dossierFinaliser'])->name('dossierFinaliser');
 Route::get('/dossierEnCours', [dossierController::class, 'dossierEnCours'])->name('dossierEnCours');
 Route::get('/dossierSuspendu', [dossierController::class, 'dossierSuspendu'])->name('dossierSuspendu');

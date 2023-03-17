@@ -3,7 +3,7 @@
     var form = $("#signup-form");
     form.validate({
         errorPlacement: function errorPlacement(error, element) {
-             element.before(error); 
+             element.before(error);
         },
         rules: {
             first_name : {
@@ -72,9 +72,9 @@
         bodyTag: "fieldset",
         transitionEffect: "fade",
         labels: {
-            previous : 'Previous',
-            next : 'Next',
-            finish : 'Submit',
+            previous : 'précedent',
+            next : 'suivant',
+            finish : 'Fin',
             current : ''
         },
         titleTemplate : '<span class="title">#title#</span>',
@@ -88,9 +88,9 @@
             form.validate().settings.ignore = ":disabled";
             return form.valid();
         },
-        onFinished: function (event, currentIndex)
+         onFinished: function (event, currentIndex)
         {
-            alert('Sumited');
+            alert('le formulaire est terminer clique sur Enregistrer pour enregistrer le formulaire');
         },
         // onInit : function (event, currentIndex) {
         //     event.append('demo');
@@ -100,7 +100,7 @@
     jQuery.extend(jQuery.validator.messages, {
         required: "",
         remote: "",
-        email: "",
+        email: "email incorrect",
         url: "",
         date: "",
         dateISO: "",
@@ -120,7 +120,7 @@
     $("#gender").on("click", ".init", function() {
         $(this).closest("#gender").children('li:not(.init)').toggle();
     });
-    
+
     var allOptions = $("#gender").children('li:not(.init)');
     $("#gender").on("click", "li:not(.init)", function() {
         allOptions.removeClass('selected');
@@ -139,7 +139,7 @@
     $("#country").on("click", ".init", function() {
         $(this).closest("#country").children('li:not(.init)').toggle();
     });
-    
+
     var CountryOptions = $("#country").children('li:not(.init)');
     $("#country").on("click", "li:not(.init)", function() {
         CountryOptions.removeClass('selected');
@@ -158,7 +158,7 @@
     $("#payment_type").on("click", ".init", function() {
         $(this).closest("#payment_type").children('li:not(.init)').toggle();
     });
-    
+
     var PaymentsOptions = $("#payment_type").children('li:not(.init)');
     $("#payment_type").on("click", "li:not(.init)", function() {
         PaymentsOptions.removeClass('selected');
@@ -188,5 +188,5 @@
         minimumAge: 0,
         maximumAge: 120
     });
-        
+
 })(jQuery);

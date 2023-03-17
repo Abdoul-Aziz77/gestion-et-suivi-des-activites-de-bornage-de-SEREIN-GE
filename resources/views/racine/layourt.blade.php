@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>plate-forme de gestion et de suivi des activitées de bornage</title>
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" media="screen" />
     <link rel="stylesheet" href="{{ asset('style.css') }}" type="text/css" />
 {{--     <link rel="stylesheet" href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
  --}}    <link rel="stylesheet" href="{{ asset('css/dark.css') }}" type="text/css" />
@@ -15,8 +15,13 @@
     <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/swiper.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('template11/css/style.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/calendar.css') }}" type="text/css" />
+    	<!-- Bootstrap Select CSS -->
+	<link rel="stylesheet" href="{{ asset('css/components/bs-select.css') }}" type="text/css" />
+
+	<!-- Bootstrap Switch CSS -->
+	<link rel="stylesheet" href="{{ asset('css/components/bs-switches.css') }}css/components/bs-switches.css" type="text/css" />
+
    {{--  <link rel="stylesheet"
         href="{{ asset('template11/fonts/themify-icons/themify-icons.css') }}"
         type="text/css" /> --}}
@@ -156,7 +161,7 @@
        {{--  <footer id="footer" class="dark">
 
             <!-- Copyrights
-   ============================================= -->
+   ============================================= -->--}}
             <div id="copyrights">
                 <div class="container">
                     <div class="row col-mb-30">
@@ -206,7 +211,7 @@
                                     <i class="icon-linkedin"></i>
                                     <i class="icon-linkedin"></i>
                                 </a>
-                            </div> --}
+                            </div> --}}
                             <div class="clear"></div>
 
                             <i class="icon-envelope2"></i> info@SEREIN.com <span class="middot">·</span> <i
@@ -215,25 +220,19 @@
                     </div>
                 </div>
             </div><!-- #copyrights end -->
-        </footer> --}}
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2021</span>
-                </div>
-            </div>
         </footer>
+
     {{-- </div> --}}
 
 
      <div id="gotoTop" class="icon-angle-up" style="display: block;"></div>
-    {{-- <script src="{{ asset('js/js_templ/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ asset('js/js_templ/jquery-3.3.1.min.js') }}"></script>
 
 
-    <!-- JQUERY STEP -->
+    {{-- <!-- JQUERY STEP -->
     <script src="{{ asset('js/js_templ/jquery.steps.js') }}"></script> --}}
 
-    <script src="{{ asset('js/js_templ/main.js') }}"></script>
+    {{-- <script src="{{ asset('js/js_templ/main.js') }}"></script> --}}
     <script src="{{ asset('js/jquery.js') }}"></script>
     <script src="{{ asset('js/plugins.min.js') }}"></script>
     <script src="{{ asset('js/components/bs-datatable.js') }}"></script>
@@ -244,6 +243,7 @@
     </script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/offcanvas.js') }}"></script>
+    <script src="{{ asset('js/mon_script.js') }}"></script>
     <script src="{{ asset('js/chart.js') }}"></script>
     <script src="{{ asset('js/chart-utils.js') }}"></script>
     <script src="{{ asset('js/jquery.calendario.js') }}"></script>
@@ -264,7 +264,7 @@
 {{-- create dossier --}}
 
   <!-- JS -->
- <script src="{{ asset('template11/vendor/jquery/jquery.min.js') }}"></script>
+ {{-- <script src="{{ asset('template11/vendor/jquery/jquery.min.js') }}"></script>
 
  <script src="{{ asset('template11/vendor/jquery-validation/dist/jquery.validate.min.js') }}"></script>
 
@@ -274,13 +274,14 @@
 
  <script src="{{ asset('template11/vendor/minimalist-picker/dobpicker.js') }}"></script>
 
- <script src="{{ asset('template11/js/main.js') }}"></script>
+ <script src="{{ asset('template11/js/main.js') }}"></script> --}}
 
     <!-- Charts JS
  ============================================= -->
 
 
  <script>
+
     var config = {
         type: 'pie',
         data: {

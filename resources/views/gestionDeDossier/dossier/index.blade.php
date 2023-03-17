@@ -67,11 +67,24 @@
                     </tfoot>
                     <tbody>
                         @foreach ($dossiers as $dossier)
-                            <tr>
+                            @php
+                                $dossier_id = $dossier->id;
+                                global $dossier_id;
+                            @endphp
 
+                            <tr>
                                 <td>{{ $dossier->id }}</td>
+
                                 <td> {{ $dossier->date_enregistrement }} </td>
-                                <td> {{ $dossier->created_at }} </td>
+
+                                <td>
+                                    @foreach ($affectations as $affectation)
+                                        @if ($affectation->id === $dossier->id)
+                                            {{ $affectation->date_affection }}
+                                        @endif
+                                    @endforeach
+                                </td>
+
                                 <td>
                                     @foreach ($personne_physiques as $personne_physique)
                                         @if ($dossier->personne_physique_id === $personne_physique->id)
@@ -79,13 +92,15 @@
                                         @endif
                                     @endforeach
                                 </td>
+
                                 <td>
-                                    @foreach ($personne_physiques as $personne_physique)
-                                        @if ($dossier->personne_physique_id === $personne_physique->id)
-                                            {{ $personne_physique->nom }} {{ $personne_physique->prenom }}
+                                    @foreach ($affectations as $affectation)
+                                        @if ($affectation->id === $dossier->id)
+                                            {{ $affectation->nom }} {{ $affectation->prenom }}
                                         @endif
                                     @endforeach
                                 </td>
+
                                 <td>
                                     @foreach ($etat_dossiers as $etat_dossier)
                                         @if ($dossier->id === $etat_dossier->dossier_id)
@@ -132,17 +147,17 @@
                                                             data-target="#myModal2" href="#{{-- {{ route('observation.create') }} --}}">Faire
                                                             une
                                                             observation</a></li>
-                                                    <li><a class="dropdown-item" data-toggle="modal"
-                                                            data-target="#myModal7" href="#">Annuler</a></li>
+                                                    <li><a class="dropdown-item "  href="{{ route('Annuler', $dossier->id) }}">Annuler</a></li>
 
-                                                    <li><a class="dropdown-item" data-toggle="modal"
-                                                            data-target="#myModal11" href="#"> Annuler la
+                                                    <li><a class="dropdown-item " href="{{ route('annul_suspension', $dossier->id) }}" id="NonSuspension"
+                                                             > Annuler la
                                                             suspension</a></li>
                                                 </ul>
+
                                             </div>
                                         @break
-
-                                    @else
+                                    @endif
+                                    @if ($etat_dossier->libelle == 'Nouveau')
                                         <div class="input-group mb-3">
 
                                             <button type="button"
@@ -151,8 +166,12 @@
                                                 <span class="visually-hidden"></span>Actions
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#">Affecter le dossier</a>
+                                                <li><a class="dropdown-item" href="#"></a>
                                                 </li>
+                                                <li><a class="dropdown-item " data-toggle="modal"
+                                                        data-target="#myModal12"
+                                                        href="#{{-- {{ route('commentaire dossier.create') }} --}}">Affecter le
+                                                        dossier</a></li>
                                                 <li><a class="dropdown-item " data-toggle="modal"
                                                         data-target="#myModal3"
                                                         href="#{{-- {{ route('commentaire dossier.create') }} --}}">Commentaire</a></li>
@@ -161,31 +180,63 @@
                                                         une
                                                         observation</a></li>
                                                 <li><a class="dropdown-item" data-toggle="modal"
-                                                        data-target="#myModal4"
-                                                        href="#{{-- {{ route('etape dossier.create') }} --}}">Changer
-                                                        l'étape du dossier</a></li>
-                                                <li><a class="dropdown-item" data-toggle="modal"
-                                                        data-target="#myModal6" href="#"> programmer une
-                                                        sortie</a></li>
-                                                {{--                       <li><a class="dropdown-item" href="#">Arrêter le dossier</a></li>
-                                                            --}}
-                                                <li><a class="dropdown-item" data-toggle="modal"
                                                         data-target="#myModal5" href="#"> Ajouer une
                                                         parcelle</a></li>
 
                                                 <li><a class="dropdown-item" data-toggle="modal"
                                                         data-target="#myModal9" href="#"> Ajouter un fichier
                                                     </a></li>
-
-                                                <li><a class="dropdown-item" data-toggle="modal"
-                                                        data-target="#myModal7" href="#">Annuler</a></li>
-
-                                                <li><a class="dropdown-item" data-toggle="modal"
-                                                        data-target="#myModal8" href="#"> Suspendre</a></li>
+                                                    <li><a class="dropdown-item"  href="{{ route('Annuler', $dossier->id) }}">Annuler</a></li>
 
                                             </ul>
+
                                         </div>
                                     @break
+
+                                @else
+                                    <div class="input-group mb-3">
+
+                                        <button type="button"
+                                            class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden"></span>Actions
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#"></a>
+                                            </li>
+                                            <li><a class="dropdown-item " data-toggle="modal"
+                                                    data-target="#myModal12"
+                                                    href="#{{-- {{ route('commentaire dossier.create') }} --}}">Reaffecter le
+                                                    dossier</a></li>
+                                            <li><a class="dropdown-item " data-toggle="modal"
+                                                    data-target="#myModal4" href="#"> Changer l'étape du
+                                                    dossier</a></li>
+
+                                            <li><a class="dropdown-item " data-toggle="modal"
+                                                    data-target="#myModal3"
+                                                    href="#{{-- {{ route('commentaire dossier.create') }} --}}">Faire un commentaire</a></li>
+                                            <li><a class="dropdown-item" data-toggle="modal"
+                                                    data-target="#myModal2"
+                                                    href="#{{-- {{ route('observation.create') }} --}}">Faire
+                                                    une
+                                                    observation</a></li>
+
+                                            <li><a class="dropdown-item" data-toggle="modal"
+                                                    data-target="#myModal5" href="#"> Ajouer une
+                                                    parcelle</a></li>
+
+                                            <li><a class="dropdown-item" data-toggle="modal"
+                                                    data-target="#myModal9" href="#"> Ajouter un fichier
+                                                </a></li>
+
+                                            <li><a class="dropdown-item"  href="{{ route('Annuler', $dossier->id) }}">Annuler</a></li>
+
+                                            <li><a class="dropdown-item confirmModalLink" href="{{ route('Suspendu', $dossier->id) }}"
+                                                    > Suspendre
+
+                                                </a></li>
+                                        </ul>
+                                    </div>
                                 @endif
                             @break
 
@@ -194,8 +245,9 @@
 
 
                     {{-- changer l'etape d'un dossier --}}
-                    <div class="modal fadeInDown dark fast undefined animated" id="myModal4" tabindex="-1"
-                        role="dialog" aria-labelledby="myModalLabel " aria-hidden="true">
+                    <div class="modal fadeInDown dark fast undefined animated" id="myModal4"
+                        tabindex="-1" role="dialog" aria-labelledby="myModalLabel "
+                        aria-hidden="true">
                         <div class="modal-dialog modal-lg ">
                             <div class="modal-body "style="background-color: #2f3542;">
                                 <div class="modal-content" style="background-color: #2f3542;">
@@ -207,7 +259,8 @@
                                             aria-hidden="true">&times;</button>
                                     </div>
                                     <div class="modal-body">
-                                        <form method="Post", action="{{ route('etape dossier.store') }}">
+                                        <form method="Post",
+                                            action="{{ route('etape dossier.store') }}">
                                             @csrf
                                             <div class="row mb-3">
                                                 <label for="nom"
@@ -218,26 +271,15 @@
                                                     <option selected>choisissez l'etape correspondant
                                                     </option>
                                                     @foreach ($etapes as $etape)
-                                                        <option value="{{ $etape->id }}">
-                                                            {{ $etape->libelle }}</option>
+                                                        @foreach ($dossier_etapes as $dossier_etape)
+                                                            @if ($dossier_etape->dossier_id == $dossier->id)
+                                                                @if ($etape->niveau > $dossier_etape->niveau)
+                                                                    <option value="{{ $etape->id }}">
+                                                                        {{ $etape->libelle }}</option>
+                                                                @endif
+                                                            @endif
+                                                        @endforeach
                                                     @endforeach
-                                                    {{-- @foreach ($etapes as $etape)
-                                                                 @foreach ($etape_dossiers as $etape_dossier)
-                                                                     @if ($dossier->id === $etape_dossier->dossier_id and $etape_dossier->etapes_id != $etape->id)
-                                                                         <option value="{{ $etape->id }}">
-                                                                             {{ $etape->libelle }}</option>
-                                                                     @endif
-                                                                 @endforeach
-                                                             @endforeach --}}
-
-
-                                                    {{-- @foreach ($etapes as $etape)
-                                                                 @if ($etape->niveau > $niveau)
-                                                                     <option value="{{ $etape->id }}">
-                                                                         {{ $etape->libelle }}</option>
-                                                                 @endif
-                                                             @break
-                                                         @endforeach --}}
 
                                                 </select>
                                             </div>
@@ -245,7 +287,7 @@
                                                 <label for="nom"
                                                     class="col-sm-2 col-form-label">Dossier</label>
 
-                                                <select class="form-select" name="dossier_id"
+                                                <select class="form-select required" name="dossier_id"
                                                     aria-label="Default select example">
                                                     @foreach ($dossiers as $dossier)
                                                         <option value="{{ $dossier->id }}">
@@ -270,7 +312,8 @@
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
-                                                <label for="surnom" class="col-sm-2 col-form-label">date
+                                                <label for="surnom"
+                                                    class="col-sm-2 col-form-label required">date
                                                     de realisation</label>
                                                 <div class="col-sm-10">
                                                     <input type="datetime-local" name="date_realisation"
@@ -324,14 +367,14 @@
                                                 <legend> </legend>
 
                                                 {{-- <div class="row mb-3">
-                                                         <label for="dossier"
-                                                             class="col-sm-2 col-form-label">dossier</label>
-                                                         <div class="col-sm-10">
-                                                             <input type="text" class="form-control"
-                                                                 name="dossier_id" value=" {{ $dossier->id }} "
-                                                                 placeholder=" {{ $dossier->type_bornage_id }}.{{ $dossier->personne_morale_id }}.{{ $dossier->id }} ">
-                                                         </div>
-                                                     </div> --}}
+                                                                                        <label for="dossier"
+                                                                                            class="col-sm-2 col-form-label">dossier</label>
+                                                                                        <div class="col-sm-10">
+                                                                                            <input type="text" class="form-control"
+                                                                                                name="dossier_id" value=" {{ $dossier->id }} "
+                                                                                                placeholder=" {{ $dossier->type_bornage_id }}.{{ $dossier->personne_morale_id }}.{{ $dossier->id }} ">
+                                                                                        </div>
+                                                                                    </div> --}}
                                                 <div class="row mb-3">
                                                     <label for="nom"
                                                         class="col-sm-2 col-form-label">le
@@ -426,12 +469,12 @@
                                     <div class="modal-body">
 
                                         {{-- <select class="form-select" name="dossier_id"
-                                                 aria-label="Default select example">
-                                                 @foreach ($dossiers as $dossier)
-                                                 <option value="{{ $dossier->id }}" >
-                                                     {{ $dossier->personne_physiques }}
-                                                 @endforeach
-                                                 </select> --}}
+                                                                                aria-label="Default select example">
+                                                                                @foreach ($dossiers as $dossier)
+                                                                                <option value="{{ $dossier->id }}" >
+                                                                                    {{ $dossier->personne_physiques }}
+                                                                                @endforeach
+                                                                                </select> --}}
 
                                         <div class="text-center"> Annulation du dossier
                                             {{ $dossier->id }}
@@ -471,7 +514,8 @@
                                     </div>
                                     <div class="modal-body">
 
-                                        <form method="Post", action="{{ route('fichier.store') }}" enctype="multipart/form-data">
+                                        <form method="Post", action="{{ route('fichier.store') }}"
+                                            enctype="multipart/form-data">
                                             @csrf
                                             <div class="row mb-3" hidden>
                                                 <label for="chemin" class="col-sm-2 col-form-label">le
@@ -483,9 +527,8 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="file" name="nom" multiple="false"
-                                                    class="form-control-file"
-                                                    >
+                                                <input type="file" name="nom[]" accept=".pdf, .docx"
+                                                    multiple class="form-control-file">
                                             </div>
 
                                             <div class="row modal-footer">
@@ -507,11 +550,7 @@
                         </div>
                     </div>
                     {{-- suspendre un dossier --}}
-                    <div class="modal fade" id="myModal8" tabindex="-1" role="dialog"
-                        aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-body ">
-                                <div class="modal-content">
+                    <div class="modal hide fade" id="suspension" >
                                     <div class="modal-header">
                                         <h4 class="modal-title text-center" id="myModalLabel">Suspendre un
                                             dossier </h4>
@@ -521,27 +560,23 @@
                                     <div class="modal-body">
 
 
-                                        <div class="text-center"> suspendre le dossier
-                                            {{ $dossier->id }}
-                                        </div>
+                                        
 
 
                                         <div class="row modal-footer">
                                             <a
-                                                href="{{ route('Suspendu', $dossier->id) }}"class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                href="#"class="col-auto me-auto button button-3d button-rounded button-green" id="oui"><i
                                                     class="icon-save1"></i>Oui</a>
 
-                                            <button type="button"
-                                                class="col-auto button button-3d button-rounded button-red"
+                                            <button type="button" class="col-auto button button-3d button-rounded button-red" id="non"
                                                 data-dismiss="modal"><i
                                                     class="icon-backspace"></i>Non</button>
                                         </div>
 
                                     </div>
 
-                                </div>
-                            </div>
-                        </div>
+                                
+                          
                     </div>
                     {{-- Annuler la suspension du dossier --}}
                     <div class="modal fade" id="myModal11" tabindex="-1" role="dialog"
@@ -550,7 +585,8 @@
                             <div class="modal-body ">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title text-center" id="myModalLabel">Suspendre un
+                                        <h4 class="modal-title text-center" id="myModalLabel"> Annuler
+                                            Suspension du
                                             dossier </h4>
                                         <button type="button" class="close" data-dismiss="modal"
                                             aria-hidden="true">&times;</button>
@@ -565,7 +601,7 @@
 
                                         <div class="row modal-footer">
                                             <a
-                                                href="{{ route('annul_suspension', $dossier->id) }}"class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                                href="#"class="col-auto me-auto button button-3d button-rounded button-green"><i
                                                     class="icon-save1"></i>Oui</a>
 
                                             <button type="button"
@@ -582,7 +618,7 @@
                     </div>
                     {{-- enregistrer une observation --}}
                     <div class="modal zoomIn faster mx-auto
-                                     undefined animated"
+                                                                    undefined animated"
                         id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -598,27 +634,27 @@
                                         <form method="Post", action="{{ route('observation.store') }}">
                                             @csrf
                                             {{-- <div class="row mb-3">
-                                     <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
+                                                                    <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
 
-                                     <select class="form-select" name="dossier_id" aria-label="Default select example">
+                                                                    <select class="form-select" name="dossier_id" aria-label="Default select example">
 
 
 
-                                         <option value="{{ $dossier->id }}">{{ $dossier->libelle }}</option>
+                                                                        <option value="{{ $dossier->id }}">{{ $dossier->libelle }}</option>
 
-                                     </select>
-                                 </div> --}}
+                                                                    </select>
+                                                                </div> --}}
                                             {{-- <div class="row mb-3">
-                                     <label for="nom" class="col-sm-2 col-form-label">Personnel</label>
+                                                                    <label for="nom" class="col-sm-2 col-form-label">Personnel</label>
 
-                                     <select class="form-select" name="personnel_id" aria-label="Default select example">
-                                         <option selected>choisissez le personnel correspondant</option>
+                                                                    <select class="form-select" name="personnel_id" aria-label="Default select example">
+                                                                        <option selected>choisissez le personnel correspondant</option>
 
-                                         @foreach ($personnels as $personnel)
-                                             <option value="{{ $personnel->id }}">{{ $personnel->matricule }}</option>
-                                         @endforeach
-                                     </select>
-                                 </div> --}}
+                                                                        @foreach ($personnels as $personnel)
+                                                                            <option value="{{ $personnel->id }}">{{ $personnel->matricule }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div> --}}
                                             <div class="row mb-3">
                                                 <div class="row mb-3" hidden>
                                                     <label for="contenu"
@@ -636,11 +672,11 @@
 
 
                                                 {{-- <div class="row mb-3">
-                                     <label for="surnom" class="col-sm-2 col-form-label">date d'observation'</label>
-                                     <div class="col-sm-10">
-                                         <input type="datetime-local" name="date_observation" id="dates">
-                                     </div>
-                                 </div> --}}
+                                                                    <label for="surnom" class="col-sm-2 col-form-label">date d'observation'</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="datetime-local" name="date_observation" id="dates">
+                                                                    </div>
+                                                                </div> --}}
                                                 <div class="row modal-footer">
                                                     <button type="submit"
                                                         class="col-auto me-auto button button-3d button-rounded button-green"><i
@@ -685,124 +721,8 @@ aria-hidden="true">
         </div>
         <div class="modal-body">
 
-            {{-- <form method="Post", action="{{ route('dossier.store') }}">
-                                @csrf
+            <link rel="stylesheet" href="{{ asset('template11/css/style.css') }}" type="text/css" />
 
-                                {{--
-                                    choix multiple
-                                    <div class="col-lg-6 bottommargin-sm">
-									<div class="white-section">
-										<label>Live Search:</label>
-										<select class="selectpicker" multiple data-live-search="true">
-											<option>Mustard</option>
-											<option>Ketchup</option>
-											<option>Relish</option>
-										</select>
-									</div>
-								</div> -}}
-
-                                <div class="col-lg-6 bottommargin-sm">
-                                    <div class="white-section">
-                                        <label>choisir un client:</label>
-                                        <select class="selectpicker" name="personne_physique_id" data-live-search="true">
-                                            @foreach ($personne_physiques as $personne_physique)
-                                                <option value=" {{ $personne_physique->id }} "
-                                                    data-tokens="ketchup mustard">
-                                                    {{ $personne_physique->nom }} {{ $personne_physique->prenom }}
-                                                </option>
-                                            @endforeach
-
-                                        </select>
-                                        <a href="{{ route('personne physique.create') }}"
-                                            class="button button-circle button-green"><i class="icon-plus-sign2"></i></a>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label>situation:</label>
-                                    <input type="text" name="situation" id="situation" class="form-control"
-                                        value="" placeholder="Entrer la localisation du site">
-                                </div>
-                                <span>Type de dossier</span>
-                                <select class="form-select" name="typebornages_id" aria-label="Default select example">
-                                    <option selected>choisissez le type de dossier
-                                    </option>
-
-                                    @foreach ($type_bornages as $type_bornage)
-                                        <option value="{{ $type_bornage->id }}">
-                                            {{ $type_bornage->libelle }}
-
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="row mb-3">
-                                    <label for="nom" class="col-sm-2 col-form-label">le
-                                        propriétaire
-                                        de la parcelle</label>
-                                    <span>Personne physique</span>
-                                    <select class="form-select" name="dossier_id" aria-label="Default select example">
-                                        <option selected>choisissez le proprietaire
-                                        </option>
-
-                                        @foreach ($personne_physiques as $personne_physique)
-                                            <option value="{{ $personne_physique->id }}">
-                                                {{ $personne_physique->nom }}
-                                                {{ $personne_physique->prenom }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <span>Personne Morale</span>
-                                    <select class="form-select" name="dossier_id" aria-label="Default select example">
-                                        <option selected>choisissez le proprietaire
-                                        </option>
-                                        @foreach ($personne_morales as $personne_morale)
-                                            <option value="{{ $personne_morale->id }}">
-                                                {{ $personne_morale->numero_recipicer }}:
-                                                {{ $personne_morale->email }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-
-                                <div class="row mb-3">
-                                    <label for="lot" class="col-sm-2 col-form-label">lot</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="lot"
-                                            placeholder="entrer lot, exemple: Abdl-Aziz">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="section" class="col-sm-2 col-form-label">section</label>
-                                    <input type="text" name="section" id="section">
-                                </div>
-
-                                <div class="row mb-3">
-                                    <label for="lot" class="col-sm-2 col-form-label">superficie</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="superficie" id="superficie">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="chemin" class="col-sm-2 col-form-label">chemin du fichier</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="chemin"
-                                            placeholder="document/dossier">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleFormControlFile1"></label>
-                                    <input type="file" class="form-control-file" id="exampleFormControlFile1">
-                                </div>
-                                <div class="row">
-                                    <a href="# {{ route('dossier.index') }} "
-                                        class="col-auto button button-3d button-rounded button-red"><i
-                                            class="icon-backspace"></i>Retour
-                                    </a>
-                                    <button class="col-auto me-auto button button-3d button-rounded button-green"
-                                        type="submit"><i class="icon-news"></i> Enregister </button>
-
-                                </div>
-
-                            </form> --}}
             <h2>Enregistrement de dossier</h2>
             <form method="Post", action="{{ route('dossier.store') }}" id="signup-form"
                 class="signup-form" enctype="multipart/form-data">
@@ -812,73 +732,151 @@ aria-hidden="true">
                     <span class="title_text">personnel</span>
                 </h3>
                 <fieldset>
+                    <legend>
+                        <span class="step-heading">ajout un nouveau client : </span>
+                        <span class="step-number">Step 1 / 3</span>
+                    </legend>
                     <label>choisir un client:</label>
-                    <a class="dropdown-item" data-toggle="modal" data-target="#myModal10"
-                        href="#">
+                    <div>
 
-                        Ajouer une personne</a>
-                    <select class="selectpicker" name="personne_physique_id" data-live-search="true">
+                        <a id="physique">
+                            <input id="physiqu" class="radio-style" name="radio-group-1"
+                                type="radio" checked>
+                            <label for="physiqu" class="radio-style-1-label">personne physique</label>
+
+                        </a>
+                        <div id="morale">
+                            <input id="moral" class="radio-style" name="radio-group-1"
+                                type="radio">
+                            <label for="moral" class="radio-style-1-label">personne morale</label>
+                        </div>
+                        <div class="row physique" id="physiqued">
+
+                            <select class=" col-sm-9 selectpicker" name="client"
+                                data-live-search="true">
+                                <option> choisir le client
+                                </option>
+                                @foreach ($personne_physiques as $personne_physique)
+                                    <option
+                                        data-tokens="{{ $personne_physique->nom }} {{ $personne_physique->prenom }}"
+                                        value=" {{ $personne_physique->id }} ">
+                                        {{ $personne_physique->nom }} {{ $personne_physique->prenom }}
+                                    </option>
+                                @endforeach
+
+                            </select>
+
+                            <a class=" col-sm-3" href="#" data-toggle="modal" id="clientPhys" data-target="#clientP"> <i
+                                    class="i-rounded i-small icon-plus-sign2 " ></i> </a>
+
+                        </div>
+
+                        <div class='row morale' id="moraled">
+
+                            <select class="col-sm-9 selectpicker" name="proprietaire"
+                                data-live-search="true">
+                                <option> choisir le client
+                                </option>
+                                @foreach ($personne_morales as $personne_morale)
+                                    <option data-tokens="{{ $personne_morale->numero_recipicer }}"
+                                        value="{{ $personne_morale->id }}">
+                                        {{ $personne_morale->numero_recipicer }}:
+                                        {{ $personne_morale->email }}</option>
+                                @endforeach
+                            </select>
+                            <a class=" col-sm-3" href="#clientM" data-toggle="modal" data-target="#"> <i
+                                    class="i-rounded i-small icon-plus-sign2"></i> </a>
+                        </div>
 
 
-                        @foreach ($personne_physiques as $personne_physique)
-                            <option
-                                data-tokens="{{ $personne_physique->nom }} {{ $personne_physique->prenom }}"
-                                value=" {{ $personne_physique->id }} ">
-                                {{ $personne_physique->nom }} {{ $personne_physique->prenom }}
-                            </option>
-                        @endforeach
 
-                    </select>
+                        {{-- nouveau personne morale --}}
+                        <div class="modal fadeInDown dark fast undefined animated" id="clientM"
+                            tabindex="-1" role="dialog" aria-labelledby="myModalLabel "
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-lg ">
+                                <div class="modal-body "style="background-color: #2f3542;">
+                                    <div class="modal-content" style="background-color: #2f3542;">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title " id="myModalLabel"> <span> Ajout d'un
+                                                    client morale
+                                                </span>
+                                            </h4>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-hidden="true">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <div class="form-group">
+                                                <label for="first_name" class="form-label required">
+                                                    nom</label>
+                                                <input type="text" name="nom" id="first_name" />
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="last_name" class="form-label required">
+                                                    Prenom</label>
+                                                <input type="text" name="prenom" id="last_name" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="email" class="form-label required">email
+                                                </label>
+                                                <input type="email" name="email" id="email" />
+                                            </div>
 
 
-                    <div class="modal fadeInDown dark fast undefined animated" id="myModal10"
-                        tabindex="-1" role="dialog" aria-labelledby="myModalLabel "
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-lg ">
-                            <div class="modal-body "style="background-color: #2f3542;">
-                                <div class="modal-content" style="background-color: #2f3542;">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title " id="myModalLabel"> <span> Ajoute d'un
-                                                parcelle </span>
-                                        </h4>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">&times;</button>
+                                            <div class="form-group">
+                                                <label for="tel"
+                                                    class="form-label required">telephone</label>
+                                                <input type="tel" name="tel_personne" id="tel">
+
+                                            </div>
+                                        </div>
+
                                     </div>
-                                    <div class="modal-body">
-                                        <legend>
-                                            <span class="step-heading">information du client: </span>
-                                            <span class="step-number">Step 1 / 4</span>
-                                        </legend>
-                                        <div class="form-group">
-                                            <label for="first_name" class="form-label required">
-                                                nom</label>
-                                            <input type="text" name="nom" id="first_name" />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="last_name" class="form-label required">
-                                                Prenom</label>
-                                            <input type="text" name="prenom" id="last_name" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email" class="form-label required">email
-                                            </label>
-                                            <input type="email" name="email" id="email" />
-                                        </div>
-
-
-                                        <div class="form-group">
-                                            <label for="tel"
-                                                class="form-label required">telephone</label>
-                                            <input type="tel" name="tel_personne" id="tel">
-
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
+
                         </div>
-                    </div>
+
+
+
+                        <div class="col-md-4 col-sm-6 col-12" hidden>
+                            <label for="">Client</label>
+                            <select class="selectpicker form-control" {{-- multiple --}}
+                                data-live-search="true" {{-- data-size="5" style="width:100%;" --}}>
+                                <option value="#">choisir un client</option>
+                                <optgroup label="Personne physique">
+                                    @foreach ($personne_physiques as $personne_physique)
+                                        <option
+                                            data-tokens="{{ $personne_physique->nom }} {{ $personne_physique->prenom }}"
+                                            value=" {{ $personne_physique->id }} ">
+                                            {{ $personne_physique->nom }} {{ $personne_physique->prenom }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                                <optgroup label="Personne Morale">
+                                    @foreach ($personne_morales as $personne_morale)
+                                        <option data-tokens="{{ $personne_morale->numero_recipicer }}"
+                                            value="{{ $personne_morale->id }}">
+                                            {{ $personne_morale->numero_recipicer }}:
+                                            {{ $personne_morale->email }}</option>
+                                    @endforeach
+                                    <option value="#">Coris Bank</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+
+
+                        <label for="file" class="col-md-4 col-form-label text-md-right">fichier sur le
+                            dossier</label>
+                        <div class="form-group">
+                            <input type="file" name="fichierd" class="form-control-file">
+                        </div>
+
+
+
                 </fieldset>
 
                 <h3>
@@ -888,11 +886,11 @@ aria-hidden="true">
                 <fieldset>
                     <legend>
                         <span class="step-heading">information sur la parcelle: </span>
-                        <span class="step-number">Step 2 / 4</span>
+                        <span class="step-number">Step 2 / 3</span>
                     </legend>
                     <div class="form-group">
-                        <label for="nparcelle" class="form-label required">numero de la parcelle</label>
-                        <input type="text" name="nparcelle" id="numparcelle" />
+                        <label for="numparcelle" class="form-label required">numero de la parcelle</label>
+                        <input type="number" name="numparcelle" id="numparcelle" />
                     </div>
 
                     <div class="form-group">
@@ -910,7 +908,8 @@ aria-hidden="true">
                         <input type="text" name="superficie" id="superficie" />
                     </div>
 
-                    <select class="form-select" name="dossier_id" aria-label="Default select example">
+                    <select class="selectpicker form-control" {{-- multiple --}}
+                        data-live-search="true" name="proprietaireP" aria-label="Default select example">
                         <option selected>choisissez le proprietaire
                         </option>
 
@@ -922,16 +921,38 @@ aria-hidden="true">
                         @endforeach
                     </select>
 
-                    <select class="selectpicker" data-live-search="true">
-                        <option>
-                        </option>
-                        @foreach ($personne_morales as $personne_morale)
-                            <option data-tokens="{{ $personne_morale->numero_recipicer }}"
-                                value="{{ $personne_morale->id }}">
-                                {{ $personne_morale->numero_recipicer }}:
-                                {{ $personne_morale->email }}</option>
-                        @endforeach
-                    </select>
+
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <label for="">proprietaire</label>
+                        <select class="selectpicker form-control" {{-- multiple --}}
+                            data-live-search="true" name="proprietaire" {{-- data-size="5" style="width:100%;" --}}>
+                            <option value="#">choisir un client</option>
+                            <optgroup label="Personne physique">
+                                @foreach ($personne_physiques as $personne_physique)
+                                    <option
+                                        data-tokens="{{ $personne_physique->nom }} {{ $personne_physique->prenom }}"
+                                        value=" {{ $personne_physique->id }} ">
+                                        {{ $personne_physique->nom }} {{ $personne_physique->prenom }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                            <optgroup label="Personne Morale">
+                                @foreach ($personne_morales as $personne_morale)
+                                    <option data-tokens="{{ $personne_morale->numero_recipicer }}"
+                                        value="{{ $personne_morale->id }}">
+                                        {{ $personne_morale->numero_recipicer }}:
+                                        {{ $personne_morale->email }}</option>
+                                @endforeach
+                                <option value="#">Coris Bank</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <label for="file" class="col-md-4 col-form-label text-md-right">fichier sur la
+                        parcelle</label>
+                    <div class="form-group">
+                        <input type="file" name="fichierp" class="form-control-file">
+                    </div>
 
                     {{-- <div class="select-list">
                                 <select name="country" id="country">
@@ -944,120 +965,38 @@ aria-hidden="true">
                 </fieldset>
 
                 <h3>
-                    <span class="icon"><i class="ti-star"></i></span>
-                    <span class="title_text">fichier</span>
-                </h3>
-                <fieldset>
-                    <legend>
-                        <span class="step-heading">information sur le fichier: </span>
-                        <span class="step-number">Step 3 / 4</span>
-                    </legend>
-                    <label for="file" class="col-md-4 col-form-label text-md-right"></label>
-                    <div class="col-md-6">
-                        <input id="file" type="file"
-                            class="form-control @error('file') is-invalid @enderror" name="file"
-                            value="{{ old('file') }}">
-                        @error('file')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                    {{-- <div class="form-group">
-                                        <label for="exampleFormControlFile1"></label>
-                                        <input type="file" class="form-control-file" accept=""
-                                            id="exampleFormControlFile1">
-                                    </div> --}}
-                    {{-- <div class="form-group">
-                                        <label for="employee_id" class="form-label required">Employee ID</label>
-                                        <input type="text" name="employee_id" id="employee_id" />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="designation" class="form-label required">Designation</label>
-                                        <input type="text" name="designation" id="designation" />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="department" class="form-label required">Department</label>
-                                        <input type="text" name="department" id="department" />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="work_hours" class="form-label required">Working hours</label>
-                                        <input type="text" name="work_hours" id="work_hours" />
-                                    </div>
-                                    --}}
-                </fieldset>
-
-                <h3>
                     <span class="icon"><i class="ti-credit-card"></i></span>
                     <span class="title_text">Commentaire</span>
                 </h3>
                 <fieldset>
                     <legend>
                         <span class="step-heading">faites un commentaire sur le dossier: </span>
-                        <span class="step-number">Step 4 / 4</span>
+                        <span class="step-number">Step 3 / 3</span>
                     </legend>
                     <div class="form-group">
                         <textarea class="form-control" placeholder="Ajout de commentaire" name="contenu" id="contenu"
                             style="height: 100px"></textarea>
                     </div>
 
-                    {{--
-                                    <div class="form-group">
-                                        <label for="holder_name" class="form-label required">Holder Name</label>
-                                        <input type="text" name="holder_name" id="holder_name" />
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-date">
-                                            <label for="expiry_date" class="form-label">Expiry Date</label>
-                                            <div class="form-date-group">
-                                                <div class="form-date-item">
-                                                    <select id="expiry_date" name="expiry_date"></select>
-                                                    <span class="select-icon"><i class="ti-angle-down"></i></span>
-                                                </div>
-                                                <div class="form-date-item">
-                                                    <select id="expiry_month" name="expiry_month"></select>
-                                                    <span class="select-icon"><i class="ti-angle-down"></i></span>
-                                                </div>
-                                                <div class="form-date-item">
-                                                    <select id="expiry_year" name="expiry_year"></select>
-                                                    <span class="select-icon"><i class="ti-angle-down"></i></span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-select">
-                                            <label for="payment_type" class="form-label">Payment type</label>
-                                            <div class="select-list">
-                                                <select name="payment_type" id="payment_type">
-                                                    <option value="">Master Card</option>
-                                                    <option value="Master Card">Master Card</option>
-                                                    <option value="Visa Card">Visa Card</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="card_number" class="form-label required">Card Number</label>
-                                            <input type="number" name="card_number" id="card_number" />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="cvc" class="form-label required">CVC</label>
-                                            <input type="text" name="cvc" id="cvc" />
-                                        </div>
-                                    </div> --}}
                     <button class="col-auto me-auto button button-3d button-rounded button-green"
                         type="submit"><i class="icon-news"></i> Enregister </button>
                 </fieldset>
 
             </form>
+
+
         </div>
+        <script src="{{ asset('template11/vendor/jquery/jquery.min.js') }}"></script>
+
+        <script src="{{ asset('template11/vendor/jquery-validation/dist/jquery.validate.min.js') }}"></script>
+
+        <script src="{{ asset('template11/vendor/jquery-validation/dist/additional-methods.min.js') }}"></script>
+
+        <script src="{{ asset('template11/vendor/jquery-steps/jquery.steps.min.js') }}"></script>
+
+        <script src="{{ asset('template11/vendor/minimalist-picker/dobpicker.js') }}"></script>
+
+        <script src="{{ asset('template11/js/main.js') }}"></script>
     </div>
 </div>
 </div>
@@ -1065,36 +1004,96 @@ aria-hidden="true">
 
 
 
+{{-- Affectation de dossier a un technicien --}}
+<div class="modal fade" id="myModal12" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+<div class="modal-body ">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title text-center" id="myModalLabel">Affectation d'un dossier a un technicien
+            </h4>
+            <button type="button" class="close" data-dismiss="modal"
+                aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+
+            <form method="Post", action="{{ route('affectation.store') }}">
+                @csrf
+
+
+                <div class="row mb-3">
+                    <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
+
+                    <select class="form-select" name="dossier_id" aria-label="Default select example">
+
+                        @foreach ($dossiers as $dossier)
+                            <option value="{{ $dossier->id }}">{{ $dossier->id }}</option>
+                        @endforeach
+
+                    </select>
+                </div>
+                <div class="row mb-3">
+                    <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
+
+                    <select class="form-select" name="personnel_id" aria-label="Default select example">
+
+                        @foreach ($personne_physiques as $personne_physique)
+                            <option value="{{ $personne_physique->id }}">{{ $personne_physique->nom }}
+                                {{ $personne_physique->prenom }}</option>
+                        @endforeach
+
+                    </select>
+                </div>
+
+
+                <div class="row modal-footer">
+                    <button type="submit"
+                        class="col-auto me-auto button button-3d button-rounded button-green"><i
+                            class="icon-save1"></i>Enregistrer</button>
+                    <button type="button" class="col-auto button button-3d button-rounded button-red"
+                        data-dismiss="modal"><i class="icon-backspace"></i>fermer</button>
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+</div>
+</div>
+
 {{-- enregistrer un commentaire --}}
 <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-            <div class="modal-body ">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title text-center" id="myModalLabel">Enregistrer un
-                            nouveau dossier </h4>
-                        <button type="button" class="close" data-dismiss="modal"
-                            aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">
+<div class="modal-dialog modal-lg">
+<div class="modal-body ">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title text-center" id="myModalLabel">Enregistrer un
+                nouveau dossier </h4>
+            <button type="button" class="close" data-dismiss="modal"
+                aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
 
-                        <form method="Post", action="{{ route('commentaire dossier.store') }}">
-                            @csrf
+            <form method="Post", action="{{ route('commentaire dossier.store') }}">
+                @csrf
 
-                            <div class="text-center"> Ajout d'un commentaire sur le dossier
-                            </div>
-                            <div class="row mb-3">
-                                <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
+                <div class="text-center"> Ajout d'un commentaire sur le dossier
+                </div>
+                <div class="row mb-3">
+                    <label for="nom" class="col-sm-2 col-form-label">Dossier</label>
 
-                                <select class="form-select" name="dossier_id" aria-label="Default select example">
+                    <select class="form-select" name="dossier_id" aria-label="Default select example">
 
 
-                                    <option value="{{ $dossier->id }}">{{ $dossier->id }}</option>
+                        <option value="{{ $dossier->id }}">{{ $dossier->id }}</option>
 
-                                </select>
-                            </div>
-                            {{-- <div class="row mb-3">
+                    </select>
+                </div>
+                {{-- <div class="row mb-3">
                                                 <label for="nom" class="col-sm-2 col-form-label">utilisateur</label>
                                                 <select class="form-select" name="utilisateur_id" aria-label="Default select example">
                                                     <option selected>choisissez l'utilisateur correspondant</option>
@@ -1105,35 +1104,23 @@ aria-hidden="true">
                                                     @endforeach
                                                 </select>
                                             </div> --}}
-                            <div class="row mb-3">
-                                <label for="contenu">Ajout de commentaire</label>
-                                <textarea class="form-control" placeholder="Ajout de commentaire" name="contenu" id="contenu"
-                                    style="height: 100px"></textarea>
-                            </div>
-                            {{-- <div class="row mb-3">
-                                                <label for="surnom" class="col-sm-2 col-form-label">date du commentaire'</label>
-                                                <div class="col-sm-10">
-                                                    <input type="datetime-local" name="date_enregistrement" id="dates">
-                                                </div>
-                                            </div> --}}
-                            <div class="row modal-footer">
-                                <button type="submit"
-                                    class="col-auto me-auto button button-3d button-rounded button-green"><i
-                                        class="icon-save1"></i>Enregistrer</button>
-                                <button type="button" class="col-auto button button-3d button-rounded button-red"
-                                    data-dismiss="modal"><i class="icon-backspace"></i>fermer</button>
-                            </div>
-
-
-
-
-                        </form>
-
-                    </div>
-
+                <div class="row mb-3">
+                    <label for="contenu">Ajout de commentaire</label>
+                    <textarea class="form-control" placeholder="Ajout de commentaire" name="contenu" id="contenu"
+                        style="height: 100px"></textarea>
                 </div>
-            </div>
+                <div class="row modal-footer">
+                    <button type="submit"
+                        class="col-auto me-auto button button-3d button-rounded button-green"><i
+                            class="icon-save1"></i>Enregistrer</button>
+                    <button type="button" class="col-auto button button-3d button-rounded button-red"
+                        data-dismiss="modal"><i class="icon-backspace"></i>fermer</button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
+</div>
 </div>
 
 {{-- affecter un dossier --}}
@@ -1228,44 +1215,80 @@ aria-hidden="true">
                             data-dismiss="modal"><i class="icon-backspace"></i>fermer</button>
                     </div>
 
+
                 </fieldset>
 
             </form>
+           
 
         </div>
 
     </div>
+ 
 </div>
 </div>
 </div>
 
 
 
-@if ($message = Session::get('success'))
-<div data-toggle="modal" data-target="#myModal4">
+{{-- nouveau personne physique --}}
+<form id="clientPform" {{-- action="" method="post" --}}>
+    @csrf
+<div class="modal fadeInDown dark fast undefined animated" id="clientP" tabindex="-1"
+role="dialog" aria-labelledby="myModalLabel " aria-hidden="true">
+<div class="modal-dialog modal-lg ">
+    <div class="modal-body "style="background-color: #2f3542;">
+        <div class="modal-content" style="background-color: #2f3542;">
+            <div class="modal-header">
+                <h4 class="modal-title " id="myModalLabel"> <span> Ajoute
+                        d'un
+                        nouveau client physique
+                    </span>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal"
+                    aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                
+                    <div class="form-group">
+                        <label for="first_name" class="form-label required">
+                            nom</label>
+                        <input type="text" name="nom" id="first_name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last_name" class="form-label required">
+                            Prenom</label>
+                        <input type="text" name="prenom" id="last_name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label required">email
+                        </label>
+                        <input type="email" name="email" id="email" />
+                    </div>
 
 
-<div class="modal undefined animated" id="myModal7" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="block mx-auto" style="background-color: #FFF; max-width: 500px;">
-        <div class="center" style="padding: 50px;">
-            <h3>notification</h3>
+                    <div class="form-group">
+                        <label for="tel"
+                            class="form-label required">telephone</label>
+                        <input type="tel" name="tel_personne" id="tel">
 
-            <div class="alert alert-success">
-                {{-- <p> {{ $message }} </p> --}}
-                <script>
-                    console.pop({{ $message }})
-                </script>
+                    </div>
+                    <div class="row modal-footer">
+                        <button id="savebtn" type="button" class="col-auto me-auto button button-3d button-rounded button-green"><i
+                                class="icon-save1"></i>Enregistrer</button>
+                        <button type="button" class="col-auto button button-3d button-rounded button-red"
+                            data-dismiss="modal"><i class="icon-backspace"></i>fermer</button>
+                    </div>
+                
             </div>
 
         </div>
-        <div class="section center m-0" style="padding: 30px;">
-            <a href="#" class="button" onclick="$.magnificPopup.close();return false;"> Fermer</a>
-        </div>
     </div>
 </div>
 </div>
-@endif
+</form>
 
 </section><!-- #content end -->
 @endsection
