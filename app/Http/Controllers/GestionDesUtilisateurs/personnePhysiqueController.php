@@ -41,7 +41,7 @@ class personnePhysiqueController extends Controller
      */
     public function nouveauPersonePhysique(Request $request)
     {
-        $personne_physiques = new Personne_physique([
+         $personne_physiques = new Personne_physique([
             'nom'=> $request-> get('nom'),
             'prenom' => $request->get('prenom'),
             'email' => $request->get('email'),
@@ -51,10 +51,21 @@ class personnePhysiqueController extends Controller
         ]);
 
         $personne_physiques->save();
+ 
+/* Personne_physique::create([
+            'nom'=> $request-> get('nom'),
+            'prenom' => $request->get('prenom'),
+            'email' => $request->get('email'),
+            'tel_personne' => $request->get('tel_personne'),
+]); */
 
-        $person = DB::table('persnne_physiques')->latest();
+        return response()->json([
+            'success'=> 'une personne ajouter avec succes'
+        ],201);
+
+        /* $person = DB::table('persnne_physiques')->latest();
         $retour = url()->previous();
-       redirect ("$retour",['persons'=>$person,]);
+       redirect ("$retour",['persons'=>$person,]); */
     }
     public function store(Request $request)
     {

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>plate-forme de gestion et de suivi des activitées de bornage</title>
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" media="screen" />
     <link rel="stylesheet" href="{{ asset('style.css') }}" type="text/css" />
 {{--     <link rel="stylesheet" href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
  --}}    <link rel="stylesheet" href="{{ asset('css/dark.css') }}" type="text/css" />
@@ -226,10 +226,10 @@
 
 
      <div id="gotoTop" class="icon-angle-up" style="display: block;"></div>
-    {{-- <script src="{{ asset('js/js_templ/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ asset('js/js_templ/jquery-3.3.1.min.js') }}"></script>
 
 
-    <!-- JQUERY STEP -->
+    {{-- <!-- JQUERY STEP -->
     <script src="{{ asset('js/js_templ/jquery.steps.js') }}"></script> --}}
 
     {{-- <script src="{{ asset('js/js_templ/main.js') }}"></script> --}}
@@ -281,7 +281,7 @@
 
 
  <script>
-    
+
     var config = {
         type: 'pie',
         data: {

@@ -195,7 +195,7 @@ if($niveau > 2)
             ->where('id', '=', $etape_dossiers)->value('etapes_id');
             $niv = DB::table('etapes')
             ->where('id', '=', $etape)->value('niveau');
-            if($niv>2)
+            if($niv>1)
             {
                 $af = DB::table('etat_dossiers')
             ->where('dossier_id', '=', $id)

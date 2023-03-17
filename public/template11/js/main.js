@@ -74,7 +74,7 @@
         labels: {
             previous : 'précedent',
             next : 'suivant',
-            finish : 'fini',
+            finish : 'Fin',
             current : ''
         },
         titleTemplate : '<span class="title">#title#</span>',
