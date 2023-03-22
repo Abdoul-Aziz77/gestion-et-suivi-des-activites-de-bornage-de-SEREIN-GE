@@ -64,8 +64,7 @@ class etapeDossierController extends Controller
                         ->where('id', '=', $etape_id)
                         ->value('niveau');
         // la request
-if($niveau > 2)
-{
+
 
     $etape_dossiers = new Etape_dossier([
         'etapes_id' => $request->get('etapes_id'),
@@ -74,6 +73,19 @@ if($niveau > 2)
         'date_realisation' => $request->get('date_realisation'),
     ]);
     $etape_dossiers->save();
+    $niveauMax = DB::table('etapes')
+                        ->max('niveau')
+                        ->value('niveau');
+    if($niveau == $niveauMax)
+{
+    $af = DB::table('etat_dossiers')
+            ->where('dossier_id', '=', $request->get('dossier_id'))
+            ->update([
+                'libelle' => 'Finaliser',
+                'description' => 'le dossier est finaliser',
+            ]);
+}
+else{
     $af = DB::table('etat_dossiers')
             ->where('dossier_id', '=', $request->get('dossier_id'))
             ->update([

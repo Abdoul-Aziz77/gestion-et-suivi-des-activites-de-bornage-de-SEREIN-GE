@@ -1,0 +1,16 @@
+<div class='row morale' id="moraled">
+
+    <select class="col-sm-9 selectpicker" name="proprietaire"
+        data-live-search="true">
+        <option> choisir le client
+        </option>
+        @foreach ($personne_morales as $personne_morale)
+            <option data-tokens="{{ $personne_morale->numero_recipicer }}"
+                value="{{ $personne_morale->id }}">
+                {{ $personne_morale->numero_recipicer }}:
+                {{ $personne_morale->email }}</option>
+        @endforeach
+    </select>
+    <a class=" col-sm-3" href="#clientM" data-toggle="modal" data-target="#"> <i
+            class="i-rounded i-small icon-plus-sign2"></i> </a>
+</div>

@@ -44,7 +44,10 @@ class fichierController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {/*
+    {
+        $id_dossier = $request->get('dossier_id');
+        dd($id_dossier);
+        /*
         $nomd = $_FILES["nom"]["name"];
         $nomd = str_replace(' ','_',$nomd);
         $nomdp = uniqid() ;

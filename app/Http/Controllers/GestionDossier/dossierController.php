@@ -221,47 +221,79 @@ $verif_idperson = $request-> get('client');
                         ; */
 
             //$personnes= DB::table('personne_physique')->select('personne_personne.*')->get();
-
+            $affectations = DB::table('affectation')
+            ->join('dossiers', 'dossiers.id', '=', 'affectation.dossier_id')
+            ->join('personne_physiques','personne_physiques.id','=','affectation.personne_physique_id')
+            ->select('affectation.dossier_id','affectation.personne_physique_id','affectation.date_affection','dossiers.*', 'personne_physiques.nom','personne_physiques.prenom')
+            ->distinct('dossiers.id')
+            ->get();
             $personnels = Personnel::all();
             $dossiers = Dossier::all();
             $etape_dossiers = Etape_dossier::all()->last()->get();
+            $etat_dossiers=DB::table('etat_dossiers')->get();
             //$etape_dossiers = DB::table('etape_dossiers')->latest()->get();
             $sorties = Sortie::all();
+            $etape_dossiers = DB::table('etape_dossiers')->distinct('dossier_id')->get();
+            //dd($etape_dossiers);
             $personne_physiques = Personne_physique::all();
             $utilisateurs = Utilisateur::all();
             $hniveau=DB::table('etapes')->max('niveau');
             $etapes=Etape::all();
             $etat_sorties=Etat_sorti::all();
-            return view('acceuil.dossier',['hniveau'=>$hniveau, 'dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
+            return view('acceuil.dossier',['etat_dossiers'=>$etat_dossiers,'affectations'=>$affectations,'hniveau'=>$hniveau, 'dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
 
         }
         public function dossierEncours(Request $request)
         {
 
             $personnels = Personnel::all();
-            $dossiers = Dossier::all();
-            $etape_dossiers = Etape_dossier::all();
+            $dossiers = DB::table('dossiers')
+            ->join('etat_dossiers','etat_dossiers.dossier_id','=','dossiers.id')
+            ->select('etat_dossiers.*','dossiers.id','dossiers.date_enregistrement')
+            ->where('etat_dossiers.libelle','=',"En Cours")
+            ->get()
+            ;
+
+            $affectations = DB::table('affectation')
+            ->join('dossiers', 'dossiers.id', '=', 'affectation.dossier_id')
+            ->join('personne_physiques','personne_physiques.id','=','affectation.personne_physique_id')
+            ->select('affectation.dossier_id','affectation.personne_physique_id','affectation.date_affection','dossiers.*', 'personne_physiques.nom','personne_physiques.prenom')
+            ->distinct('dossiers.id')
+            ->get();
+            $etape_dossiers = DB::table('etape_dossiers')->distinct('dossier_id')->get();
             $sorties = Sortie::all();
             $personne_physiques = Personne_physique::all();
             $utilisateurs = Utilisateur::all();
             $etapes=Etape::all();
             $etat_sorties=Etat_sorti::all();
-            return view('acceuil.dossierEnCours',['dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
+            return view('acceuil.dossierEnCours',[ 'affectations'=>$affectations,'dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
 
         }
 
         public function dossierFinaliser(Request $request)
         {
 
+            $affectations = DB::table('affectation')
+            ->join('dossiers', 'dossiers.id', '=', 'affectation.dossier_id')
+            ->join('personne_physiques','personne_physiques.id','=','affectation.personne_physique_id')
+            ->select('affectation.dossier_id','affectation.personne_physique_id','affectation.date_affection','dossiers.*', 'personne_physiques.nom','personne_physiques.prenom')
+            ->distinct('dossiers.id')
+            ->get();
+
             $personnels = Personnel::all();
-            $dossiers = Dossier::all();
-            $etape_dossiers = Etape_dossier::all();
+            $dossiers = DB::table('dossiers')
+            ->join('etat_dossiers','etat_dossiers.dossier_id','=','dossiers.id')
+            ->select('etat_dossiers.*','dossiers.id','dossiers.date_enregistrement')
+            ->where('etat_dossiers.libelle','=',"finaliser")
+            ->get()
+            ;
+            $etape_dossiers = DB::table('etape_dossiers')->distinct('dossier_id')->get();
             $sorties = Sortie::all();
             $personne_physiques = Personne_physique::all();
             $utilisateurs = Utilisateur::all();
             $etapes=Etape::all();
             $etat_sorties=Etat_sorti::all();
-            return view('acceuil.dossierEnCours',['dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
+            return view('acceuil.dossierFinaliser',['affectations'=>$affectations,'dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
 
         }
 
@@ -269,14 +301,27 @@ $verif_idperson = $request-> get('client');
         {
 
             $personnels = Personnel::all();
-            $dossiers = Dossier::all();
-            $etape_dossiers = Etape_dossier::all();
+            $dossiers = DB::table('dossiers')
+            ->join('etat_dossiers','etat_dossiers.dossier_id','=','dossiers.id')
+            ->select('etat_dossiers.*','dossiers.id','dossiers.date_enregistrement')
+            ->where('etat_dossiers.libelle','=',"Suspendu")
+            ->get()
+            ;
+
+            $affectations = DB::table('affectation')
+            ->join('dossiers', 'dossiers.id', '=', 'affectation.dossier_id')
+            ->join('personne_physiques','personne_physiques.id','=','affectation.personne_physique_id')
+            ->select('affectation.dossier_id','affectation.personne_physique_id','affectation.date_affection','dossiers.*', 'personne_physiques.nom','personne_physiques.prenom')
+            ->distinct('dossiers.id')
+            ->get();
+
+            $etape_dossiers = DB::table('etape_dossiers')->distinct('dossier_id')->get();
             $sorties = Sortie::all();
             $personne_physiques = Personne_physique::all();
             $utilisateurs = Utilisateur::all();
             $etapes=Etape::all();
             $etat_sorties=Etat_sorti::all();
-            return view('acceuil.dossierEnCours',['dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
+            return view('acceuil.dossierSuspendu',['affectations'=>$affectations,'dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
 
         }
 
@@ -284,14 +329,53 @@ $verif_idperson = $request-> get('client');
         {
 
             $personnels = Personnel::all();
-            $dossiers = Dossier::all();
-            $etape_dossiers = Etape_dossier::all();
-            $sorties = Sortie::all();
+            $dossiers = DB::table('dossiers')
+                        ->join('etat_dossiers','etat_dossiers.dossier_id','=','dossiers.id')
+                        ->select('etat_dossiers.*','dossiers.id','dossiers.date_enregistrement')
+                        ->where('etat_dossiers.libelle','=',"Annuler")
+                        ->get()
+                        ;
+
+            $affectations = DB::table('affectation')
+                        ->join('dossiers', 'dossiers.id', '=', 'affectation.dossier_id')
+                        ->join('personne_physiques','personne_physiques.id','=','affectation.personne_physique_id')
+                        ->select('affectation.dossier_id','affectation.personne_physique_id','affectation.date_affection','dossiers.*', 'personne_physiques.nom','personne_physiques.prenom')
+                        ->distinct('dossiers.id')
+                        ->get();
+
+            $etape_dossiers = DB::table('etape_dossiers')->distinct('dossier_id')->get();
+            //$sorties = Sortie::all();
             $personne_physiques = Personne_physique::all();
             $utilisateurs = Utilisateur::all();
             $etapes=Etape::all();
             $etat_sorties=Etat_sorti::all();
-            return view('acceuil.dossierEnCours',['dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
+            return view('acceuil.dossierAnnuler',['affectations'=>$affectations,'dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, /* 'sorties'=>$sorties, */'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
+
+        }
+        public function dossierNouveau(Request $request)
+        {
+
+            $personnels = Personnel::all();
+            $dossiers = DB::table('dossiers')
+                        ->join('etat_dossiers','etat_dossiers.dossier_id','=','dossiers.id')
+                        ->select('etat_dossiers.*','dossiers.id','dossiers.date_enregistrement')
+                        ->where('etat_dossiers.libelle','=',"Nouveau")
+                        ->get()
+                        ;
+
+            $affectations = DB::table('affectation')
+                        ->join('dossiers', 'dossiers.id', '=', 'affectation.dossier_id')
+                        ->join('personne_physiques','personne_physiques.id','=','affectation.personne_physique_id')
+                        ->select('affectation.dossier_id','affectation.personne_physique_id','affectation.date_affection','dossiers.*', 'personne_physiques.nom','personne_physiques.prenom')
+                        ->distinct('dossiers.id')
+                        ->get();
+            $etape_dossiers = DB::table('etape_dossiers')->distinct('dossier_id')->get();
+            //$sorties = Sortie::all();
+            $personne_physiques = Personne_physique::all();
+            $utilisateurs = Utilisateur::all();
+            $etapes=Etape::all();
+            $etat_sorties=Etat_sorti::all();
+            return view('acceuil.dossierNouveau',['affectations'=>$affectations,'dossiers'=>$dossiers, 'personne_physiques'=>$personne_physiques, /* 'sorties'=>$sorties, */'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels, 'utilisateurs'=>$utilisateurs, 'etapes'=>$etapes, 'etat_sorties'=>$etat_sorties]);
 
         }
 
@@ -373,16 +457,33 @@ $verif_idperson = $request-> get('client');
     {
         //
         $personnels = Personnel::all();
-        $dossiers = Dossier::findOrFail($id);
-        $etape_dossiers = DB::table('etape_dossiers')->where('dossier_id','=',$id)->get();
+        //$dossiers = DB::table('dossiers')->where('dossiers.id','=',$id)->first('id');
+        $etape_dossiers = DB::table('etape_dossiers')->where('id','=',$id)->get();
+       /*  $etape_dossiersN = DB::table('etape_dossiers')->where('id','=',$id)
+        ->join('etapes','etapes.id','!=','etape_dossiers.etapes_id')
+        ->select('etapes.*','etape_dossiers.*')->get()
+        //->where('id','=',$id)->get()
+        ; */
+        $etape = DB::table('etape_dossiers')->where('dossier_id','=',$id)->get()
+                    //->select('etapes_id')
+                    //->where('dossier_id','=',$id)
+                    //->groupBy('etapes_id')
+                    ;
+        /* $etape_reste = DB::table('etapes')
+                    ->joinSub($etape, 'etape',function($join){
+                        $join->on('etape.etapes_id','=','etapes.id');
+                    })->get();
+
+        dd($etape); */
         $sorties = Sortie::all();
+        $etapes = Etape::all();
         $observations=Observation::all();
         $personne_physiques = Personne_physique::all();
-        $commentaires = Commentaire_dossier::all();
+        $commentaires = DB::table('commentaire_dossiers')->where('id','=',$id)->get();
         $utilisateurs = Utilisateur::all();
-        $parcelles = Parcelle::all();
-        $fichiers = fichier::all();
-        return view('gestionDeDossier.dossier.show',[ 'parcelles'=>$parcelles, 'fichiers'=>$fichiers, 'dossiers'=>$dossiers,'utilisateurs'=>$utilisateurs, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels,'observations'=>$observations, 'commentaires'=>$commentaires]);
+        $parcelles = DB::table('parcelles')->where('id','=',$id)->get();
+        $fichiers = DB::table('fichiers')->where('id','=',$id)->get();
+        return view('gestionDeDossier.dossier.show',[ 'etapes'=>$etapes,'parcelles'=>$parcelles, 'fichiers'=>$fichiers, /* 'dossiers'=>$dossiers, */'utilisateurs'=>$utilisateurs, 'personne_physiques'=>$personne_physiques, 'sorties'=>$sorties,'etape_dossiers'=>$etape_dossiers,'personnels'=>$personnels,'observations'=>$observations, 'commentaires'=>$commentaires]);
 
     }
 

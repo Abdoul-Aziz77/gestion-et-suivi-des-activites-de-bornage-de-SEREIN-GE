@@ -8,7 +8,7 @@
             <div class="table-responsive">
 
 
-                <div class="card-header text-center">La liste des dossiers en cours</div>
+                <div class="card-header text-center">La liste des nouveau dossier</div>
                 <br>
                 <table id="datatable1" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
@@ -33,8 +33,6 @@
 
                         @foreach ($dossiers as $dossier)
                         <tr>
-
-
                                 <td>{{ $dossier->id }}</td>
                                 <td>
                                     @foreach ($personne_physiques as $personne_physique)
@@ -62,7 +60,6 @@
                                                         @endif
                                                     @endforeach
                                 </td>
-
                     </tr>
                         @endforeach
                     </tbody>

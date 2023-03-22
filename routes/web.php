@@ -26,6 +26,7 @@ use App\Http\Controllers\GestionDossier\parcelleController;
 use App\Http\Controllers\GestionDossier\personneDossierController;
 use App\Http\Controllers\GestionDossier\rolePersonneController;
 use App\Http\Controllers\GestionDossier\typeBornageController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,15 +40,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/* Route::get('/', function () {
     return view('home');
-})->name('home');
+})->name('home'); */
 
 /* Route::get('/acceuil/dossier', function () {
     return view('acceuil.dossier');
 })->name('dossier'); */
 
 //Route::controller();
+Route::get('/', [HomeController::class, 'home'])->name('home');
+
 Route::get('/acceuil/sortie', function () {
     return view('acceuil.sortie');
 })->name('sortie');
@@ -72,6 +75,7 @@ Route::get('/parametrage', function () {
 //Route::post('/ajoutParcelle', [incompatible::class, 'ajoutParcelle'])->name('Ajoutparcelle');
 
 Route::any('/bornage-anuller/{id}', [etapeDossierController::class, 'annuler'])->name('Annuler');
+
 
 Route::resource('type de bornage', typeBornageController::class);
 
@@ -99,7 +103,7 @@ Route::resource('adresse', adresseController::class);
 Route::resource('personne morale', personneMoraleController::class);
 
 Route::resource('personne physique', personnePhysiqueController::class);
-Route::post('personne physique', [personnePhysiqueController::class, 'nouveauPersonnePhysique']) ->name('nouveauPersonnePhysique');
+Route::post('/personne_physique/nouveau', [personnePhysiqueController::class, 'nouveauPersonePhysique']) ->name('nouveauPersonnePhysique');
 
 
 Route::resource('personnel', personnelController::class);
@@ -116,6 +120,7 @@ Route::get('/dossierFinaliser', [dossierController::class, 'dossierFinaliser'])-
 Route::get('/dossierEnCours', [dossierController::class, 'dossierEnCours'])->name('dossierEnCours');
 Route::get('/dossierSuspendu', [dossierController::class, 'dossierSuspendu'])->name('dossierSuspendu');
 Route::get('/dossierAnnuler', [dossierController::class, 'dossierAnnuler'])->name('dossierAnnuler');
+Route::get('/dossierNouveau', [dossierController::class, 'dossierNouveau'])->name('dossierNouveau');
 
 Route::resource('etape dossier', etapeDossierController::class);
 

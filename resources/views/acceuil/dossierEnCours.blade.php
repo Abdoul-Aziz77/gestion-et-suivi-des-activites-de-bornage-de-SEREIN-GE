@@ -33,11 +33,6 @@
 
                         @foreach ($dossiers as $dossier)
                         <tr>
-                        @foreach ($etape_dossiers as $etape_dossier)
-                        @if ($etape_dossier->id == $dossier->id)
-
-                                @if ($etape_dossier->statut == 1)
-
                                 <td>{{ $dossier->id }}</td>
                                 <td>
                                     @foreach ($personne_physiques as $personne_physique)
@@ -46,13 +41,25 @@
                                         @endif
                                     @endforeach
                                 </td>
-                                <td> responsable </td>
+                                <td>
+                                    @foreach ($affectations as $affectation)
+                                    @if ($affectation->id === $dossier->id)
+                                        {{ $affectation->nom }} {{ $affectation->prenom }}
+                                    @endif
+                                @endforeach
+                                </td>
                                 <td> {{$dossier->date_enregistrement}} </td>
-                                <td> {{$etape_dossier->Etapes->libelle}} </td>
-                                @endif
-                                @endif
-
-                        @endforeach
+                                <td>
+                                    @foreach ($etape_dossiers as $etape_dossier)
+                                                        @if ($etape_dossier->dossier_id == $dossier->id)
+                                                            @foreach ($etapes as $etape)
+                                                            @if ($etape_dossier->etapes_id == $etape->id)
+                                                            {{$etape->libelle}}
+                                                            @endif
+                                                            @endforeach
+                                                        @endif
+                                                    @endforeach
+                                </td>
                     </tr>
                         @endforeach
                     </tbody>

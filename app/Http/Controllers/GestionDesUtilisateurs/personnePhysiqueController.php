@@ -47,21 +47,19 @@ class personnePhysiqueController extends Controller
             'email' => $request->get('email'),
             'tel_personne' => $request->get('tel_personne'),
             //'date_naissance' => $request->get('date_naissance'),
-            //'adresse_id'=> $id,
+            'adresse_id'=> 1,
         ]);
 
         $personne_physiques->save();
- 
-/* Personne_physique::create([
-            'nom'=> $request-> get('nom'),
-            'prenom' => $request->get('prenom'),
-            'email' => $request->get('email'),
-            'tel_personne' => $request->get('tel_personne'),
+
+ /* Personne_physique::create([
+            'nom'=> $request->nom,
+            'prenom' => $request->prenom,
+            'email' => $request->email,
+            'tel_personne' => $request->tel_personne,
 ]); */
 
-        return response()->json([
-            'success'=> 'une personne ajouter avec succes'
-        ],201);
+        return response($personne_physiques);
 
         /* $person = DB::table('persnne_physiques')->latest();
         $retour = url()->previous();

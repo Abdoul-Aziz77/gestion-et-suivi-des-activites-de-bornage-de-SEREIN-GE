@@ -4,10 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>plate-forme de gestion et de suivi des activitées de bornage</title>
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" media="screen" />
     <link rel="stylesheet" href="{{ asset('style.css') }}" type="text/css" />
+
 {{--     <link rel="stylesheet" href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
  --}}    <link rel="stylesheet" href="{{ asset('css/dark.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/font-icons.css') }}" type="text/css" />
@@ -20,7 +23,7 @@
 	<link rel="stylesheet" href="{{ asset('css/components/bs-select.css') }}" type="text/css" />
 
 	<!-- Bootstrap Switch CSS -->
-	<link rel="stylesheet" href="{{ asset('css/components/bs-switches.css') }}css/components/bs-switches.css" type="text/css" />
+	<link rel="stylesheet" href="{{ asset('css/components/bs-switches.css') }}" type="text/css" />
 
    {{--  <link rel="stylesheet"
         href="{{ asset('template11/fonts/themify-icons/themify-icons.css') }}"
@@ -235,18 +238,11 @@
     {{-- <script src="{{ asset('js/js_templ/main.js') }}"></script> --}}
     <script src="{{ asset('js/jquery.js') }}"></script>
     <script src="{{ asset('js/plugins.min.js') }}"></script>
-    <script src="{{ asset('js/components/bs-datatable.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#datatable1').dataTable();
-        });
-    </script>
+
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('js/offcanvas.js') }}"></script>
-    <script src="{{ asset('js/mon_script.js') }}"></script>
-    <script src="{{ asset('js/chart.js') }}"></script>
-    <script src="{{ asset('js/chart-utils.js') }}"></script>
-    <script src="{{ asset('js/jquery.calendario.js') }}"></script>
+{{--     <script src="{{ asset('js/offcanvas.js') }}"></script>
+ --}}    <script src="{{ asset('js/mon_script.js') }}"></script>
+    
     <script src="{{ asset('js/events-data.js') }}"></script>
     <script src="{{ asset('js/components/bs-select.js') }}"></script>
     <script src="{{ asset('js/components/selectsplitter.js') }}"></script>
@@ -254,9 +250,13 @@
  --}}{{--     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
  --}}
  <script>
-
     $('.selectsplitter').selectsplitter();
-
+</script>
+<script src="{{ asset('js/components/bs-datatable.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#datatable1').dataTable();
+        });
 </script>
     <script src="{{ asset('js/functions.js') }}"></script>
 
@@ -280,90 +280,8 @@
  ============================================= -->
 
 
- <script>
 
-    var config = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [
-                    /* randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(), */
-                    10,
-                    15,
-                    50,
-                    600,
-                    200,
-                ],
-                backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.orange,
-                    window.chartColors.leaf,
-                    window.chartColors.green,
-                    window.chartColors.blue,
-                ],
-                label: 'Dataset 1'
-            }],
-            labels: [
-                "Dossier annuler",
-                "Dossier suspendu",
-                "nouveau dossier",
-                "Dossier finnaliser",
-                "Dossier en cours"
-            ]
-        },
-        options: {
-            responsive: true
-        }
-    };
 
-    window.onload = function() {
-        var ctx = document.getElementById("chart-0").getContext("2d");
-        window.myPie = new Chart(ctx, config);
-    };
-    //var colorNames = Object.keys(window.chartColors);
-</script>
-
-<script>
-    // calendrier
-    var cal = $('#calendar').calendario({
-            onDayClick: function($el, $contentEl, dateProperties) {
-
-                for (var key in dateProperties) {
-                    console.log(key + ' = ' + dateProperties[key]);
-                }
-
-                $('#clicked-month').html(dateProperties['month']);
-                $('#clicked-day').html(dateProperties['day']);
-
-            },
-            caldata: canvasEvents
-        }),
-        $month = $('#calendar-month').html(cal.getMonthName()),
-        $year = $('#calendar-year').html(cal.getYear());
-
-    $('#calendar-next').on('click', function() {
-        cal.gotoNextMonth(updateMonthYear);
-    });
-    $('#calendar-prev').on('click', function() {
-        cal.gotoPreviousMonth(updateMonthYear);
-    });
-    $('#calendar-current').on('click', function() {
-        cal.gotoNow(updateMonthYear);
-    });
-
-    function updateMonthYear() {
-        $month.html(cal.getMonthName());
-        $year.html(cal.getYear());
-    }
-
-    skrollr.init({
-        forceHeight: false
-    });
-</script>
 
 </body>
 

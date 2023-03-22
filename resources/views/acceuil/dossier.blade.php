@@ -70,18 +70,22 @@
                                             @endif
                                         @endforeach
                                     </td>
-                                    <td> responsable </td>
+                                    <td>
+                                        @foreach ($affectations as $affectation)
+                                            @if ($affectation->id === $dossier->id)
+                                                {{ $affectation->nom }} {{ $affectation->prenom }}
+                                            @endif
+                                        @endforeach
+                                    </td>
                                     <td> {{ $dossier->date_enregistrement }} </td>
                                     <td>
                                         @foreach ($etape_dossiers as $etape_dossier)
-                                            @if ($etape_dossier->id == $dossier->id)
-                                                <p>
-                                                    @if ($etape_dossier->statut == 1)
-                                                        <p>cours ...</p>
-                                                    @else
-                                                        <p>arrêter!</p>
-                                                    @endif
-                                                </p>
+                                            @if ($etape_dossier->dossier_id == $dossier->id)
+@foreach ($etapes as $etape)
+@if ($etape_dossier->etapes_id == $etape->id)
+{{$etape->libelle}}
+@endif
+@endforeach
                                             @endif
                                         @endforeach
                                     </td>
@@ -119,10 +123,13 @@
                         </tfoot>
                         <tbody>
                             @foreach ($dossiers as $dossier)
+                            @foreach ($etat_dossiers as $etat_dossier)
+                                        @if ($etat_dossier->dossier_id == $dossier->id and $etat_dossier->libelle=="En Cours" )
+
+
+
                                 <tr>
-                                    @foreach ($etape_dossiers as $etape_dossier)
-                                        @if ($etape_dossier->id == $dossier->id)
-                                            
+
                                                 <td>{{ $dossier->id }}</td>
                                                 <td>
                                                     @foreach ($personne_physiques as $personne_physique)
@@ -132,13 +139,31 @@
                                                         @endif
                                                     @endforeach
                                                 </td>
-                                                <td> responsable </td>
+                                                <td>
+                                                    @foreach ($affectations as $affectation)
+                                                        @if ($affectation->id === $dossier->id)
+                                                            {{ $affectation->nom }} {{ $affectation->prenom }}
+                                                        @endif
+                                                    @endforeach
+                                                </td>
                                                 <td> {{ $dossier->date_enregistrement }} </td>
-                                                <td> {{ $etape_dossier->Etapes->libelle }} </td>
-                                            
-                                        @endif
-                                    @endforeach
+                                                <td>
+                                                    @foreach ($etape_dossiers as $etape_dossier)
+                                                        @if ($etape_dossier->dossier_id == $dossier->id)
+                                                            @foreach ($etapes as $etape)
+                                                            @if ($etape_dossier->etapes_id == $etape->id)
+                                                            {{$etape->libelle}}
+                                                            @endif
+                                                            @endforeach
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+
+
                                 </tr>
+
+                                @endif
+                                @endforeach
                             @endforeach
                         </tbody>
                     </table>
@@ -172,9 +197,11 @@
                         </tfoot>
                         <tbody>
                             @foreach ($dossiers as $dossier)
+                            @foreach ($etat_dossiers as $etat_dossier)
+                                        @if ($etat_dossier->dossier_id == $dossier->id and $etat_dossier->libelle=="Finaliser" )
+
                                 <tr>
-                                    @foreach ($etape_dossiers as $etape_dossier)
-                                        @if ($etape_dossier->id == $dossier->id and $etape_dossier->Etapes->niveau == $hniveau)
+
                                             <td>{{ $dossier->id }}</td>
                                             <td>
                                                 @foreach ($personne_physiques as $personne_physique)
@@ -184,12 +211,29 @@
                                                     @endif
                                                 @endforeach
                                             </td>
-                                            <td> responsable </td>
+                                            <td>
+                                                @foreach ($affectations as $affectation)
+                                                    @if ($affectation->id === $dossier->id)
+                                                        {{ $affectation->nom }} {{ $affectation->prenom }}
+                                                    @endif
+                                                @endforeach
+                                            </td>
                                             <td> {{ $dossier->date_enregistrement }} </td>
-                                            <td> {{ $etape_dossier->Etapes->libelle }} </td>
-                                        @endif
-                                    @endforeach
+                                            <td>
+                                                @foreach ($etape_dossiers as $etape_dossier)
+                                                    @if ($etape_dossier->dossier_id == $dossier->id)
+        @foreach ($etapes as $etape)
+        @if ($etape_dossier->etapes_id == $etape->id)
+        {{$etape->libelle}}
+        @endif
+        @endforeach
+                                                    @endif
+                                                @endforeach
+                                            </td>
+
                                 </tr>
+                                @endif
+                                    @endforeach
                             @endforeach
                         </tbody>
                     </table>
@@ -223,9 +267,11 @@
                         </tfoot>
                         <tbody>
                             @foreach ($dossiers as $dossier)
+                            @foreach ($etat_dossiers as $etat_dossier)
+                                        @if ($etat_dossier->dossier_id == $dossier->id and $etat_dossier->libelle=="Annuler" )
+
                                 <tr>
-                                    @foreach ($etape_dossiers as $etape_dossier)
-                                        @if ($etape_dossier->id == $dossier->id and $etape_dossier->Etapes->niveau == 0)
+
                                             <td>{{ $dossier->id }}</td>
                                             <td>
                                                 @foreach ($personne_physiques as $personne_physique)
@@ -235,12 +281,30 @@
                                                     @endif
                                                 @endforeach
                                             </td>
-                                            <td> responsable </td>
+                                            <td>
+                                                @foreach ($affectations as $affectation)
+                                                    @if ($affectation->id === $dossier->id)
+                                                        {{ $affectation->nom }} {{ $affectation->prenom }}
+                                                    @endif
+                                                @endforeach
+                                            </td>
                                             <td> {{ $dossier->date_enregistrement }} </td>
-                                            <td> {{ $etape_dossier->Etapes->libelle }} </td>
-                                        @endif
-                                    @endforeach
+                                            <td>
+                                                @foreach ($etape_dossiers as $etape_dossier)
+                                                    @if ($etape_dossier->dossier_id == $dossier->id)
+        @foreach ($etapes as $etape)
+        @if ($etape_dossier->etapes_id == $etape->id)
+        {{$etape->libelle}}
+        @endif
+        @endforeach
+                                                    @endif
+                                                @endforeach
+                                            </td>
+
+
                                 </tr>
+                                @endif
+                                @endforeach
                             @endforeach
                         </tbody>
                     </table>
@@ -274,10 +338,11 @@
                         </tfoot>
                         <tbody>
                             @foreach ($dossiers as $dossier)
+                            @foreach ($etat_dossiers as $etat_dossier)
+                                        @if ($etat_dossier->dossier_id == $dossier->id and $etat_dossier->libelle=="Suspendu" )
+
                                 <tr>
-                                    @foreach ($etape_dossiers as $etape_dossier)
-                                        @if ($etape_dossier->id == $dossier->id)
-                                            @if ($etape_dossier->statut == 1)
+
                                                 <td>{{ $dossier->id }}</td>
                                                 <td>
                                                     @foreach ($personne_physiques as $personne_physique)
@@ -287,13 +352,30 @@
                                                         @endif
                                                     @endforeach
                                                 </td>
-                                                <td> responsable </td>
+                                                <td>
+                                                    @foreach ($affectations as $affectation)
+                                                        @if ($affectation->id === $dossier->id)
+                                                            {{ $affectation->nom }} {{ $affectation->prenom }}
+                                                        @endif
+                                                    @endforeach
+                                                </td>
                                                 <td> {{ $dossier->date_enregistrement }} </td>
-                                                <td> {{ $etape_dossier->Etapes->libelle }} </td>
-                                            @endif
-                                        @endif
-                                    @endforeach
+                                                <td>
+                                                    @foreach ($etape_dossiers as $etape_dossier)
+                                                        @if ($etape_dossier->dossier_id == $dossier->id)
+                                                            @foreach ($etapes as $etape)
+                                                            @if ($etape_dossier->etapes_id == $etape->id)
+                                                            {{$etape->libelle}}
+                                                            @endif
+                                                            @endforeach
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+
+
                                 </tr>
+                                @endif
+                                    @endforeach
                             @endforeach
                         </tbody>
                     </table>

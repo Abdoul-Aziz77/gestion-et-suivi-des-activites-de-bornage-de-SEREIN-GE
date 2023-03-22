@@ -1,0 +1,20 @@
+<div class="row physique" id="physiqued">
+
+    <select class=" col-sm-9 selectpicker" name="client"
+        data-live-search="true">
+        <option> choisir le client
+        </option>
+        @foreach ($personne_physiques as $personne_physique)
+            <option
+                data-tokens="{{ $personne_physique->nom }} {{ $personne_physique->prenom }}"
+                value=" {{ $personne_physique->id }} ">
+                {{ $personne_physique->nom }} {{ $personne_physique->prenom }}
+            </option>
+        @endforeach
+
+    </select>
+
+    <a class=" col-sm-3" href="#" data-toggle="modal" id="clientPhys" data-target="#clientP"> <i
+            class="i-rounded i-small icon-plus-sign2 " ></i> </a>
+
+</div>
